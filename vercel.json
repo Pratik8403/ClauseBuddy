@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "ClauseBuddy Backend/main.py", "use": "@vercel/python" },
+    { "src": "ClauseBuddy Frontend/index.html", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "ClauseBuddy Backend/main.py" },
+    { "src": "/(.*)", "dest": "ClauseBuddy Frontend/$1" }
+  ]
+}
