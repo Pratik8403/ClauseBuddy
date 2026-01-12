@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | ClauseBuddy Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0d0f0d; color: #e2e8f0; }
+        .glass { background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(20px); border: 1px solid rgba(16, 185, 129, 0.1); }
+        .glow-emerald { box-shadow: 0 0 50px rgba(16, 185, 129, 0.2); }
+        .dot-loader { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+
+    <div id="paymentContainer" class="max-w-md w-full glass p-12 rounded-[3.5rem] text-center border-emerald-500/20 glow-emerald">
+        
+        <div id="formSection">
+            <i class="fa-solid fa-lock text-emerald-500 text-3xl mb-6"></i>
+            <h2 class="text-3xl font-black text-white mb-2 tracking-tighter uppercase italic">Secure Upgrade</h2>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-12">Tier: ClauseBuddy Pro</p>
+            
+            <div class="space-y-4">
+                <div class="text-left">
+                    <label class="text-[9px] font-black text-slate-600 uppercase tracking-widest ml-1 mb-2 block">Card Information</label>
+                    <input type="text" placeholder="•••• •••• •••• ••••" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500 transition text-center tracking-[0.3em]">
+                </div>
+                <div class="flex gap-4">
+                    <input type="text" placeholder="MM/YY" class="w-1/2 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500 transition text-center">
+                    <input type="text" placeholder="CVC" class="w-1/2 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500 transition text-center">
+                </div>
+                
+                <button onclick="handlePayment()" id="payBtn" class="w-full bg-emerald-600 py-5 rounded-2xl font-black text-white uppercase tracking-[0.2em] text-xs mt-6 transition hover:bg-emerald-500 shadow-lg shadow-emerald-600/20">
+                    Authorize $3.00
+                </button>
+            </div>
+            
+            <p class="mt-8 text-[9px] text-slate-600 uppercase font-bold tracking-widest">
+                <i class="fa-solid fa-shield-check mr-1 text-emerald-900"></i> 256-bit AES Encrypted
+            </p>
+        </div>
+
+        <div id="successSection" class="hidden py-8">
+            <div class="h-24 w-24 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-emerald-500/30">
+                <i class="fa-solid fa-check text-5xl text-emerald-500"></i>
+            </div>
+            <h2 class="text-3xl font-black text-white mb-2 tracking-tighter uppercase">Payment Verified</h2>
+            <p class="text-slate-500 text-sm mb-12">Welcome to the Pro Tier. Your defense is now upgraded.</p>
+            <a href="dashboard.html" class="inline-block bg-white text-black px-12 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-emerald-50 transition">
+                Enter Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function handlePayment() {
+            const btn = document.getElementById('payBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="dot-loader">Processing...</span>';
+            
+            // Simulate Payment Delay
+            setTimeout(() => {
+                document.getElementById('formSection').classList.add('hidden');
+                document.getElementById('successSection').classList.remove('hidden');
+                // Persist Pro status locally
+                localStorage.setItem('userTier', 'pro');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

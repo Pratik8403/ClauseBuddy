@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install ClauseBuddy | Extension Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0d0f0d; color: #e2e8f0; }
+        .glass { background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(20px); border: 1px solid rgba(16, 185, 129, 0.1); }
+        .glow-emerald { box-shadow: 0 0 50px rgba(16, 185, 129, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+
+    <div class="max-w-2xl w-full glass p-12 md:p-16 rounded-[4rem] text-center relative overflow-hidden" data-aos="zoom-in">
+        <div class="absolute -top-10 -left-10 w-40 h-40 bg-emerald-600/10 rounded-full blur-3xl"></div>
+        
+        <h1 class="text-4xl font-black text-white mb-4 tracking-tighter uppercase">Get ClauseBuddy</h1>
+        <p class="text-slate-500 mb-12 text-sm font-bold uppercase tracking-[0.3em]">Developer Preview v1.0</p>
+
+        
+        <div class="space-y-10 text-left max-w-sm mx-auto relative z-10">
+            <div class="flex gap-6 items-center group" data-aos="fade-up" data-aos-delay="100">
+                <div class="h-12 w-12 bg-emerald-600 rounded-2xl flex items-center justify-center font-black text-white shadow-lg transition group-hover:scale-110">1</div>
+                <div>
+                    <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Download</p>
+                    <a href="ClauseBuddy_v1.zip" class="text-white font-bold underline hover:text-emerald-400 transition text-lg">ClauseBuddy_v1.zip</a>
+                </div>
+            </div>
+            <div class="flex gap-6 items-center group" data-aos="fade-up" data-aos-delay="200">
+                <div class="h-12 w-12 bg-emerald-600 rounded-2xl flex items-center justify-center font-black text-white shadow-lg transition group-hover:scale-110">2</div>
+                <div>
+                    <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Browser Settings</p>
+                    <p class="text-white font-bold">Open <span class="bg-emerald-950 px-2 py-1 rounded text-emerald-400 font-mono text-sm tracking-tight">chrome://extensions</span></p>
+                </div>
+            </div>
+            <div class="flex gap-6 items-center group" data-aos="fade-up" data-aos-delay="300">
+                <div class="h-12 w-12 bg-emerald-600 rounded-2xl flex items-center justify-center font-black text-white shadow-lg transition group-hover:scale-110">3</div>
+                <div>
+                    <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Activate</p>
+                    <p class="text-white font-bold">Enable <span class="text-emerald-400">Developer Mode</span> & Load Unpacked</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-16 pt-8 border-t border-white/5">
+            <a href="index.html" class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 hover:text-emerald-400 transition">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Return to Home
+            </a>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ duration: 1000, once: true });</script>
+</body>
+</html>

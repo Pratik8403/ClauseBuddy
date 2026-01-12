@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { width: 320px; background-color: #0d0f0d; color: #e2e8f0; font-family: 'Inter', sans-serif; margin: 0; padding: 24px; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1.2rem; color: #fff; margin-bottom: 20px; }
+        .logo i { color: #10b981; }
+        .description { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; margin-bottom: 24px; }
+        .btn-primary { width: 100%; background: #10b981; color: #fff; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s, background 0.2s; }
+        .btn-primary:hover { background: #059669; transform: translateY(-2px); }
+        footer { margin-top: 20px; text-align: center; font-size: 0.7rem; color: #475569; letter-spacing: 0.05em; text-transform: uppercase; }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="logo">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>ClauseBuddy</span>
+    </div>
+    <p class="description">Scan this page for hidden legal risks, auto-renewals, and predatory data clauses.</p>
+    
+    <button id="analyzeBtn" class="btn-primary">
+        Analyze Page <i class="fa-solid fa-wand-magic-sparkles"></i>
+    </button>
+
+    <footer>We read the fine print for you</footer>
+    <script src="popup.js"></script>
+</body>
+</html>

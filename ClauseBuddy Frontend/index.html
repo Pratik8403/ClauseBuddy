@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClauseBuddy | AI Digital Protection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0d0f0d; color: #e2e8f0; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(20px); border: 1px solid rgba(16, 185, 129, 0.1); }
+        .glow-emerald { box-shadow: 0 0 50px rgba(16, 185, 129, 0.1); }
+        .gradient-text { background: linear-gradient(90deg, #34d399, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .bento-card { transition: all 0.4s ease; cursor: pointer; }
+        .bento-card:hover { transform: translateY(-8px); border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.02); }
+        .privacy-badge { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed w-full z-50 px-6 py-4 glass mt-4 mx-auto max-w-6xl left-0 right-0 rounded-2xl flex items-center justify-between" data-aos="fade-down">
+        <div class="text-xl font-black tracking-tighter flex items-center gap-2 text-white">
+            <span class="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center glow-emerald">
+                <i class="fa-solid fa-shield-halved text-white text-sm"></i>
+            </span>
+            ClauseBuddy
+        </div>
+        <div class="hidden md:flex gap-10 text-[10px] font-black uppercase tracking-widest text-slate-500">
+            <a href="download.html" class="hover:text-emerald-400 transition text-emerald-500">Download</a>
+            <a href="#features" class="hover:text-emerald-400 transition">Features</a>
+            <a href="#pricing" class="hover:text-emerald-400 transition">Pricing</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="openModal('loginModal')" class="text-[10px] font-black uppercase tracking-widest hover:text-white transition">Login</button>
+            <button onclick="openModal('signupModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] px-6 py-3 rounded-xl font-black transition glow-emerald uppercase tracking-widest">Sign Up</button>
+        </div>
+    </nav>
+
+    <header class="pt-64 pb-20 px-6 max-w-6xl mx-auto text-center">
+        <div data-aos="zoom-out" data-aos-duration="1200">
+            <h1 class="text-[10px] font-black text-emerald-500 mb-6 tracking-[0.4em] uppercase">Privacy-First AI</h1>
+            <h2 class="text-6xl md:text-9xl font-black mb-8 tracking-tighter text-white leading-none">
+                Stop Scrolling. <br> <span class="gradient-text">Start Knowing.</span>
+            </h2>
+            <p class="max-w-xl mx-auto text-slate-500 text-lg mb-12 leading-relaxed">
+                The browser extension that translates legal jargon into human truth. Protect your data and wallet in one click.
+            </p>
+            <a href="download.html" class="bg-emerald-600 hover:bg-emerald-500 text-white px-12 py-5 rounded-2xl font-black text-lg transition glow-emerald inline-block uppercase tracking-widest">
+                Add to Chrome — It's Free
+            </a>
+        </div>
+    </header>
+
+    <section class="py-24 px-6 max-w-6xl mx-auto">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h3 class="text-2xl font-black text-white italic">The ClauseBuddy Difference</h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+            <div class="glass p-8 rounded-[2.5rem] border-red-500/20 opacity-50" data-aos="fade-right">
+                <p class="text-[10px] font-black text-red-500 uppercase tracking-widest mb-4">Without ClauseBuddy</p>
+                <p class="text-xs text-slate-500 leading-relaxed blur-[1px]">
+                    "By using this service, you agree that the Company may, at its sole discretion, collect, aggregate, and sell anonymized metadata to third-party data brokerage networks for the purpose of refining ad-delivery algorithms..." (x500 pages)
+                </p>
+            </div>
+            <div class="glass p-8 rounded-[2.5rem] border-emerald-500/30 glow-emerald" data-aos="fade-left">
+                <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4">With ClauseBuddy</p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-red-500"></span> <p class="text-sm font-bold text-white">They sell your data to advertisers.</p></div>
+                    <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-yellow-500"></span> <p class="text-sm font-bold text-white">Auto-renewal starts in 14 days.</p></div>
+                    <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-green-500"></span> <p class="text-sm font-bold text-white">You keep ownership of your content.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-32 px-6 max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6" data-aos="fade-up">
+            <div>
+                <h2 class="text-4xl font-black text-white tracking-tighter">Elite Defense Suite</h2>
+                <p class="text-slate-500 text-sm mt-2">AI-driven modules for absolute transparency.</p>
+            </div>
+            <div class="flex bg-white/5 p-1 rounded-xl border border-white/10">
+                <button onclick="changeLang('en')" id="btn-en" class="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition bg-emerald-600 text-white">English</button>
+                <button onclick="changeLang('hi')" id="btn-hi" class="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition text-slate-500">Hindi</button>
+                <button onclick="changeLang('bn')" id="btn-bn" class="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition text-slate-500">Bengali</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div class="md:col-span-8 glass p-10 rounded-[3rem] relative group bento-card" data-aos="fade-right">
+                <div class="absolute top-0 right-0 p-10 flex gap-3">
+                    <div class="w-4 h-4 rounded-full bg-red-500 shadow-[0_0_15px_#ef4444]"></div>
+                    <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
+                    <div class="w-4 h-4 rounded-full bg-emerald-500"></div>
+                </div>
+                <h3 id="feat-title-1" class="text-3xl font-black mb-6 text-white uppercase tracking-tighter">Traffic Light Risk System</h3>
+                <p id="feat-desc-1" class="text-slate-400 text-lg max-w-md">Interprets legal context at a glance—flagging predatory terms in Red and fair terms in Green.</p>
+            </div>
+
+            <div class="md:col-span-4 glass p-10 rounded-[3rem] bento-card" data-aos="fade-left">
+                <i class="fa-solid fa-message text-emerald-400 text-3xl mb-8"></i>
+                <h3 id="feat-title-2" class="text-2xl font-bold mb-4 text-white">Interactive Q&A</h3>
+                <p id="feat-desc-2" class="text-slate-400 text-sm">Ask questions in plain English directly in the sidebar and get instant answers.</p>
+            </div>
+
+            <div class="md:col-span-4 glass p-8 rounded-3xl group bento-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-6"><i class="fa-solid fa-clone text-emerald-400"></i></div>
+                <h3 class="text-xl font-bold mb-2 text-white">Shadow Comparison</h3>
+                <p class="text-slate-500 text-xs">Spot aggressive harvesting by comparing sites against industry Gold Standards.</p>
+            </div>
+            <div class="md:col-span-4 glass p-8 rounded-3xl group bento-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-6"><i class="fa-solid fa-calculator text-emerald-400"></i></div>
+                <h3 class="text-xl font-bold mb-2 text-white">Cost Calculator</h3>
+                <p class="text-slate-500 text-xs">AI extracts every hidden fee and auto-renewal date into a clean summary.</p>
+            </div>
+            <div class="md:col-span-4 glass p-8 rounded-3xl group bento-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-6"><i class="fa-solid fa-eraser text-emerald-400"></i></div>
+                <h3 class="text-xl font-bold mb-2 text-white">One-Click Deletion</h3>
+                <p class="text-slate-500 text-xs">Find hidden "Delete Account" links and generate automated removal requests.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-32 px-6 max-w-5xl mx-auto border-t border-white/5">
+        <div class="grid md:grid-cols-2 gap-10">
+            <div class="glass p-12 rounded-[3.5rem]" data-aos="fade-up">
+                <p class="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] mb-4">Standard</p>
+                <div class="text-7xl font-black text-white mb-10">$0</div>
+                <ul class="space-y-5 mb-12 text-xs text-slate-500 font-bold uppercase tracking-widest">
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-3"></i> Unlimited Analysis</li>
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-3"></i> Traffic Light Scoring</li>
+                    <li><i class="fa-solid fa-check text-emerald-500 mr-3"></i> Regional Language</li>
+                </ul>
+                <button onclick="window.location.href='download.html'" class="w-full py-5 rounded-2xl border border-white/10 font-black uppercase tracking-widest text-[10px] hover:bg-white/5 transition">Get Started</button>
+            </div>
+            <div class="glass p-12 rounded-[3.5rem] border-emerald-500/30 glow-emerald relative" data-aos="fade-up" data-aos-delay="200">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-600 text-[10px] font-black px-6 py-2 rounded-full text-white uppercase tracking-widest">Elite</div>
+                <p class="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em] mb-4">Professional</p>
+                <div class="text-7xl font-black text-white mb-10">$3</div>
+                <ul class="space-y-5 mb-12 text-xs text-slate-300 font-bold uppercase tracking-widest">
+                    <li><i class="fa-solid fa-bolt text-emerald-500 mr-3"></i> Shadow Comparison</li>
+                    <li><i class="fa-solid fa-bolt text-emerald-500 mr-3"></i> Cost Calculator</li>
+                    <li><i class="fa-solid fa-bolt text-emerald-500 mr-3"></i> Safety Scorecard</li>
+                    <li><i class="fa-solid fa-bolt text-emerald-500 mr-3"></i> Data Deletion Hub</li>
+                </ul>
+                <a href="payment.html" class="w-full py-5 rounded-2xl bg-emerald-600 font-black text-white text-center block uppercase tracking-widest text-[10px]">Upgrade to Pro</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="flex justify-center pb-24 px-6" data-aos="zoom-in">
+        <div class="glass px-8 py-4 rounded-2xl flex items-center gap-6 border-emerald-500/20 privacy-badge">
+            <i class="fa-solid fa-fingerprint text-emerald-400 text-2xl"></i>
+            <div>
+                <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Privacy Promise</p>
+                <p class="text-xs text-slate-400">Zero-Knowledge Architecture: We summarize data, we never store it.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="py-20 border-t border-white/5 text-center px-6">
+        <div class="text-xl font-black text-white mb-4 uppercase tracking-tighter">ClauseBuddy</div>
+        <p class="text-slate-700 text-[10px] font-bold uppercase tracking-[0.4em]">© 2026 ClauseBuddy. Built for Transparency.</p>
+    </footer>
+
+    <div id="loginModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-3xl px-6">
+        <div class="glass w-full max-w-md p-12 rounded-[3.5rem] border-emerald-500/20">
+            <h2 class="text-4xl font-black text-white mb-10 tracking-tighter">Login</h2>
+            <form class="space-y-6" onsubmit="event.preventDefault(); handleAuthSuccess();">
+                <input type="email" required placeholder="EMAIL" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500 text-xs font-bold tracking-widest">
+                <input type="password" required placeholder="PASSWORD" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500 text-xs font-bold tracking-widest">
+                <button class="w-full bg-emerald-600 py-5 rounded-2xl font-black text-white uppercase tracking-widest text-xs">Enter Command Center</button>
+            </form>
+            <button onclick="closeModal('loginModal')" class="mt-8 text-slate-600 hover:text-white font-black w-full text-[10px] uppercase tracking-widest">Dismiss</button>
+        </div>
+    </div>
+
+    <div id="signupModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-3xl px-6">
+        <div class="glass w-full max-w-md p-12 rounded-[3.5rem] border-emerald-500/20">
+            <h2 class="text-4xl font-black text-white mb-10 tracking-tighter">Sign Up</h2>
+            <form class="space-y-6" onsubmit="event.preventDefault(); handleAuthSuccess();">
+                <input type="email" required placeholder="EMAIL" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500 text-xs font-bold tracking-widest">
+                <input type="password" required placeholder="PASSWORD" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500 text-xs font-bold tracking-widest">
+                <button class="w-full bg-emerald-600 py-5 rounded-2xl font-black text-white uppercase tracking-widest text-xs">Join ClauseBuddy</button>
+            </form>
+            <button onclick="closeModal('signupModal')" class="mt-8 text-slate-600 hover:text-white font-black w-full text-[10px] uppercase tracking-widest">Dismiss</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+        
+        const langData = {
+            en: { t1: "Traffic Light Risk System", d1: "Interprets legal context at a glance—flagging predatory terms in Red and fair terms in Green.", t2: "Interactive Q&A", d2: "Ask questions in plain English directly in the sidebar and get instant answers." },
+            hi: { t1: "ट्रैफ़िक लाइट रिस्क सिस्टम", d1: "एक नज़र में कानूनी संदर्भ की व्याख्या करता है—खतरनाक शर्तों को लाल और निष्पक्ष शर्तों को हरे रंग में चिह्नित करता है।", t2: "इंटरएक्टिव प्रश्नोत्तर", d2: "साइडबार में सीधे सरल भाषा में प्रश्न पूछें और तुरंत उत्तर प्राप्त करें।" },
+            bn: { t1: "ট্রাফিক লাইট রিস্ক সিস্টেম", d1: "এক নজরে আইনি বিষয়বস্তু ব্যাখ্যা করে—বিপজ্জনক শর্তগুলিকে লাল এবং সঠিক শর্তগুলিকে সবুজ রঙে চিহ্নিত করে।", t2: "ইন্টারেক্টিভ প্রশ্নোত্তর", d2: "সরাসরি সাইডবারে সহজ ভাষায় প্রশ্ন জিজ্ঞাসা করুন এবং তাৎক্ষণিক উত্তর পান।" }
+        };
+
+        function changeLang(lang) {
+            document.getElementById('feat-title-1').innerText = langData[lang].t1;
+            document.getElementById('feat-desc-1').innerText = langData[lang].d1;
+            document.getElementById('feat-title-2').innerText = langData[lang].t2;
+            document.getElementById('feat-desc-2').innerText = langData[lang].d2;
+            ['en','hi','bn'].forEach(l => {
+                const btn = document.getElementById(`btn-${l}`);
+                btn.classList.remove('bg-emerald-600', 'text-white');
+                btn.classList.add('text-slate-500');
+            });
+            const activeBtn = document.getElementById(`btn-${lang}`);
+            activeBtn.classList.add('bg-emerald-600', 'text-white');
+            activeBtn.classList.remove('text-slate-500');
+        }
+
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); document.body.style.overflow = 'auto'; }
+        function handleAuthSuccess() { localStorage.setItem('loggedIn', 'true'); window.location.href = 'dashboard.html'; }
+    </script>
+</body>
+</html>

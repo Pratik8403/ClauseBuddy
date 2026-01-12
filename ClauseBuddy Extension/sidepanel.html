@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { background-color: #0d0f0d; color: #e2e8f0; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        .container { padding: 24px; }
+        
+        /* Header */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; }
+        .brand { font-weight: 800; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .status-badge { background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(16, 185, 129, 0.2); }
+
+        /* Safety Gauge Card */
+        .card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 24px; margin-bottom: 20px; }
+        .gauge-title { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 20px; }
+        .score-display { display: flex; align-items: baseline; gap: 4px; }
+        .score-num { font-size: 3.5rem; font-weight: 900; color: #fff; }
+        .score-max { color: #10b981; font-weight: 700; }
+
+        /* Analysis Sections */
+        .section-header { font-size: 0.85rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .risk-item { display: flex; gap: 12px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); }
+        .risk-icon { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+        .risk-text { font-size: 0.85rem; line-height: 1.4; color: #94a3b8; }
+        
+        /* Loading Spinner */
+        .loader { text-align: center; margin-top: 40px; }
+        .spinner { width: 30px; height: 30px; border: 3px solid rgba(16, 185, 129, 0.1); border-top: 3px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="brand"><i class="fa-solid fa-shield-halved text-emerald-500"></i> ClauseBuddy</div>
+            <div class="status-badge">AI SECURE</div>
+        </header>
+
+        <div id="loadingView" class="loader">
+            <div class="spinner"></div>
+            <p style="font-size: 0.8rem; color: #64748b;">Reading website terms...</p>
+        </div>
+
+        <div id="resultView" style="display: none;">
+            <div class="card">
+                <p class="gauge-title">Privacy Score</p>
+                <div class="score-display">
+                    <span class="score-num">84</span>
+                    <span class="score-max">/100</span>
+                </div>
+            </div>
+
+            <div class="section-header"><i class="fa-solid fa-triangle-exclamation text-yellow-500"></i> Key Findings</div>
+            <div class="risk-item">
+                <div class="risk-icon" style="background: #ef4444;"></div>
+                <div class="risk-text"><b>Data Sharing:</b> Your profile metadata is sold to 3rd party brokers for advertising.</div>
+            </div>
+            <div class="risk-item">
+                <div class="risk-icon" style="background: #eab308;"></div>
+                <div class="risk-text"><b>Auto-Renewal:</b> This subscription auto-renews 24hrs before the period ends.</div>
+            </div>
+        </div>
+    </div>
+    <script src="sidepanel.js"></script>
+</body>
+</html>
