@@ -2,10 +2,13 @@
   "version": 2,
   "builds": [
     { "src": "ClauseBuddy Backend/main.py", "use": "@vercel/python" },
-    { "src": "ClauseBuddy Frontend/index.html", "use": "@vercel/static" }
+    { "src": "ClauseBuddy Frontend/*", "use": "@vercel/static" }
   ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "ClauseBuddy Backend/main.py" },
-    { "src": "/(.*)", "dest": "ClauseBuddy Frontend/$1" }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "ClauseBuddy Backend/main.py" },
+    { "source": "/download", "destination": "/ClauseBuddy Frontend/download.html" },
+    { "source": "/payment", "destination": "/ClauseBuddy Frontend/payment.html" },
+    { "source": "/dashboard", "destination": "/ClauseBuddy Frontend/dashboard.html" },
+    { "source": "/(.*)", "destination": "/ClauseBuddy Frontend/$1" }
   ]
 }
