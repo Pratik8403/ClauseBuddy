@@ -3,58 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Install ClauseBuddy | Extension Guide</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <title>Download | Clause Buddy</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0d0f0d; color: #e2e8f0; }
-        .glass { background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(20px); border: 1px solid rgba(16, 185, 129, 0.1); }
-        .glow-emerald { box-shadow: 0 0 50px rgba(16, 185, 129, 0.1); }
+        :root {
+            --bg: #050505;
+            --emerald: #10b981;
+            --emerald-glow: rgba(16, 185, 129, 0.15);
+            --card-bg: #0d0d0d;
+            --border: #1a1a1a;
+            --text-main: #ffffff;
+            --text-dim: #777777;
+        }
+
+        /* --- Global Animations --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            padding: 80px 5%;
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 80px;
+            align-items: start;
+        }
+
+        /* --- Left Side: Brand Identity --- */
+        .brand-section {
+            position: sticky;
+            top: 80px;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #111;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--emerald);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        h1 {
+            font-size: 5.5rem;
+            font-weight: 900;
+            margin: 0 0 20px 0;
+            letter-spacing: -5px;
+            line-height: 0.85;
+        }
+
+        h1 span {
+            font-weight: 200;
+            color: var(--emerald);
+            letter-spacing: -2px;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-dim);
+            max-width: 400px;
+            margin-bottom: 40px;
+            border-left: 2px solid var(--border);
+            padding-left: 20px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: var(--emerald);
+            color: #000;
+            padding: 22px 50px;
+            border-radius: 12px;
+            font-weight: 800;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px var(--emerald-glow);
+        }
+
+        .download-btn:hover {
+            transform: scale(1.02) translateY(-4px);
+            box-shadow: 0 20px 40px var(--emerald-glow);
+        }
+
+        /* --- Right Side: Utility Bento Grid --- */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        /* Enlarge Video Container */
+        .video-box {
+            grid-column: span 2;
+            background: #000;
+            border: 1px solid var(--emerald);
+            border-radius: 24px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* Bento Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 20px;
+            transition: 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--emerald);
+            transform: translateY(-5px);
+            background: #111;
+        }
+
+        .card-tag {
+            font-size: 0.7rem;
+            color: var(--emerald);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .code {
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            color: #eee;
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 1100px) {
+            .container { grid-template-columns: 1fr; padding-top: 50px; }
+            .brand-section { position: static; text-align: center; margin-bottom: 60px; }
+            .hero-desc { margin: 0 auto 40px; text-align: left; }
+            h1 { font-size: 4rem; }
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
+<body>
 
-    <div class="max-w-2xl w-full glass p-12 md:p-16 rounded-[4rem] text-center relative overflow-hidden" data-aos="zoom-in">
-        <div class="absolute -top-10 -left-10 w-40 h-40 bg-emerald-600/10 rounded-full blur-3xl"></div>
+    <div class="container">
         
-        <h1 class="text-4xl font-black text-white mb-4 tracking-tighter uppercase">Get ClauseBuddy</h1>
-        <p class="text-slate-500 mb-12 text-sm font-bold uppercase tracking-[0.3em]">Developer Preview v1.0</p>
+        <aside class="brand-section">
+            <div class="status-badge">
+                <span class="pulse-dot"></span> Stable Release v1.0.4
+            </div>
+            
+            <h1>Clause<span>Buddy</span></h1>
+            
+            <p class="hero-desc">
+                Stop skimming, start knowing. Our AI instantly highlights data risks, hidden costs, and privacy loopholes in any legal agreement.
+            </p>
 
-        
-        <div class="space-y-10 text-left max-w-sm mx-auto relative z-10">
-            <div class="flex gap-6 items-center group" data-aos="fade-up" data-aos-delay="100">
-                <div class="h-12 w-12 bg-emerald-600 rounded-2xl flex items-center justify-center font-black text-white shadow-lg transition group-hover:scale-110">1</div>
-                <div>
-                    <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Download</p>
-                    <a href="ClauseBuddy_v1.zip" class="text-white font-bold underline hover:text-emerald-400 transition text-lg">ClauseBuddy_v1.zip</a>
-                </div>
-            </div>
-            <div class="flex gap-6 items-center group" data-aos="fade-up" data-aos-delay="200">
-                <div class="h-12 w-12 bg-emerald-600 rounded-2xl flex items-center justify-center font-black text-white shadow-lg transition group-hover:scale-110">2</div>
-                <div>
-                    <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Browser Settings</p>
-                    <p class="text-white font-bold">Open <span class="bg-emerald-950 px-2 py-1 rounded text-emerald-400 font-mono text-sm tracking-tight">chrome://extensions</span></p>
-                </div>
-            </div>
-            <div class="flex gap-6 items-center group" data-aos="fade-up" data-aos-delay="300">
-                <div class="h-12 w-12 bg-emerald-600 rounded-2xl flex items-center justify-center font-black text-white shadow-lg transition group-hover:scale-110">3</div>
-                <div>
-                    <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Activate</p>
-                    <p class="text-white font-bold">Enable <span class="text-emerald-400">Developer Mode</span> & Load Unpacked</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-16 pt-8 border-t border-white/5">
-            <a href="index.html" class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 hover:text-emerald-400 transition">
-                <i class="fa-solid fa-arrow-left mr-2"></i> Return to Home
+            <a href="ClauseBuddy_v1.zip" class="download-btn" download>
+                Download Package
             </a>
-        </div>
+            
+            <p style="margin-top: 25px; font-size: 0.8rem; color: #333;">
+                Supports Chrome, Edge, and Brave browsers.
+            </p>
+        </aside>
+
+        <main class="bento-grid">
+            
+            <div class="video-box">
+                <video controls poster="thumbnail.png">
+                    <source src="tutorial.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="card">
+                <span class="card-tag">Setup 01</span>
+                <h3>Extract Source</h3>
+                <p>Locate <span class="code">clausebuddy.zip</span> in your downloads. Extract it to a permanent folder on your machine.</p>
+            </div>
+
+            <div class="card">
+                <span class="card-tag">Setup 02</span>
+                <h3>Dev Mode</h3>
+                <p>Navigate to <span class="code">chrome://extensions</span> and toggle the <strong>Developer Mode</strong> switch to ON.</p>
+            </div>
+
+            <div class="card">
+                <span class="card-tag">Setup 03</span>
+                <h3>Load Extension</h3>
+                <p>Click <strong>Load Unpacked</strong> and select the inner <span class="code">extension</span> folder from your extracted files.</p>
+            </div>
+
+            <div class="card">
+                <span class="card-tag">Setup 04</span>
+                <h3>Toolbar Pin</h3>
+                <p>Open the puzzle icon in your browser and <strong>Pin</strong> Clause Buddy to start your first legal analysis.</p>
+            </div>
+
+        </main>
     </div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>AOS.init({ duration: 1000, once: true });</script>
 </body>
 </html>

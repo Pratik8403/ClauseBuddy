@@ -1,68 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        body { background-color: #0d0f0d; color: #e2e8f0; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        .container { padding: 24px; }
-        
-        /* Header */
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 16px; }
-        .brand { font-weight: 800; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 8px; }
-        .status-badge { background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(16, 185, 129, 0.2); }
-
-        /* Safety Gauge Card */
-        .card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 24px; margin-bottom: 20px; }
-        .gauge-title { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 20px; }
-        .score-display { display: flex; align-items: baseline; gap: 4px; }
-        .score-num { font-size: 3.5rem; font-weight: 900; color: #fff; }
-        .score-max { color: #10b981; font-weight: 700; }
-
-        /* Analysis Sections */
-        .section-header { font-size: 0.85rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        .risk-item { display: flex; gap: 12px; padding: 16px; background: rgba(255,255,255,0.03); border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); }
-        .risk-icon { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-        .risk-text { font-size: 0.85rem; line-height: 1.4; color: #94a3b8; }
-        
-        /* Loading Spinner */
-        .loader { text-align: center; margin-top: 40px; }
-        .spinner { width: 30px; height: 30px; border: 3px solid rgba(16, 185, 129, 0.1); border-top: 3px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="sidepanel.css">
+    <title>Clause Buddy AI</title>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="brand"><i class="fa-solid fa-shield-halved text-emerald-500"></i> ClauseBuddy</div>
-            <div class="status-badge">AI SECURE</div>
-        </header>
+    <div class="header">
+        <h1>Clause<span>Buddy</span></h1>
+        <div class="status">
+            <span class="pulse"></span> AI ACTIVE
+        </div>
+    </div>
 
-        <div id="loadingView" class="loader">
-            <div class="spinner"></div>
-            <p style="font-size: 0.8rem; color: #64748b;">Reading website terms...</p>
+    <div class="scroll-content">
+        <div class="card summary">
+            <div class="card-header">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                AI SUMMARY
+            </div>
+            <p id="summary-text">Analyzing documents for hidden loopholes and privacy traps...</p>
         </div>
 
-        <div id="resultView" style="display: none;">
-            <div class="card">
-                <p class="gauge-title">Privacy Score</p>
-                <div class="score-display">
-                    <span class="score-num">84</span>
-                    <span class="score-max">/100</span>
-                </div>
+        <div class="risk-card red">
+            <div class="risk-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4d4d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </div>
+            <div class="risk-info">
+                <strong>Critical Risks</strong>
+                <p id="red-count">No data yet</p>
+            </div>
+        </div>
 
-            <div class="section-header"><i class="fa-solid fa-triangle-exclamation text-yellow-500"></i> Key Findings</div>
-            <div class="risk-item">
-                <div class="risk-icon" style="background: #ef4444;"></div>
-                <div class="risk-text"><b>Data Sharing:</b> Your profile metadata is sold to 3rd party brokers for advertising.</div>
+        <div class="risk-card yellow">
+            <div class="risk-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffb84d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </div>
-            <div class="risk-item">
-                <div class="risk-icon" style="background: #eab308;"></div>
-                <div class="risk-text"><b>Auto-Renewal:</b> This subscription auto-renews 24hrs before the period ends.</div>
+            <div class="risk-info">
+                <strong>Hidden Concerns</strong>
+                <p id="yellow-count">No data yet</p>
+            </div>
+        </div>
+
+        <div class="risk-card green">
+            <div class="risk-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="risk-info">
+                <strong>Safe Clauses</strong>
+                <p id="green-count">No data yet</p>
             </div>
         </div>
     </div>
-    <script src="sidepanel.js"></script>
+
+    <div class="footer-chat">
+        <div class="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Ask about a specific clause...">
+            <button id="send-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+            </button>
+        </div>
+    </div>
 </body>
 </html>
