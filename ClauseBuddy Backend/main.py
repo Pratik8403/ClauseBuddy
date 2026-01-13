@@ -1,6 +1,8 @@
+from http.server import BaseHTTPRequestHandler
 import json
 import os
-from google import genai
+
+# NOTE: We do NOT import google.genai here to prevent immediate crashes.
 
 def handler(request):
     # 1. Handle CORS (Essential for Chrome Extensions)
@@ -14,18 +16,28 @@ def handler(request):
             }
         }
 
-    # 2. Safety Block Starts HERE (Catches ALL errors)
+    # 2. Safety Block
     try:
+        # TEST 1: Check if API Key exists
         api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:
             return {
                 'statusCode': 500, 
                 'headers': {'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({'error': 'CRITICAL: GEMINI_API_KEY is missing'})
+                'body': json.dumps({'error': 'CRITICAL: GEMINI_API_KEY is missing in Vercel Settings'})
             }
 
-        # FIX: Initialize Client INSIDE the try block
-        # If this fails, the 'except' block below will catch it and tell you why
+        # TEST 2: Try to import the library INSIDE the function
+        try:
+            from google import genai
+        except ImportError as e:
+            return {
+                'statusCode': 500,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': f"Library Error: {str(e)}. Please check requirements.txt has 'google-genai'."})
+            }
+
+        # Initialize Client
         client = genai.Client(api_key=api_key)
 
         if request.method == 'POST':
@@ -35,7 +47,6 @@ def handler(request):
 
             # CHAT LOGIC
             if user_question:
-                # Use standard 1.5-flash for maximum stability
                 chat_prompt = f"Context: {legal_text[:5000]}\n\nQuestion: {user_question}\nAnswer simply."
                 response = client.models.generate_content(model='gemini-1.5-flash', contents=chat_prompt)
                 return {
@@ -64,7 +75,6 @@ def handler(request):
             }
 
     except Exception as e:
-        # This catches the crash and sends it as JSON so the extension can read it
         print(f"Runtime Error: {str(e)}")
         return {
             'statusCode': 500, 
