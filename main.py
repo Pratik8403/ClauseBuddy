@@ -13,16 +13,12 @@ def handler(request):
             }
         }
     
-    # 2. Simple Success Response
+    # 2. Return Success Message
     return {
         'statusCode': 200,
         'headers': {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
         },
-        'body': json.dumps({
-            'status': 'success', 
-            'message': 'Vercel connection is working!',
-            'folder_check': 'The backend folder is correctly named.'
-        })
+        'body': json.dumps({'status': 'Online', 'message': 'Root deployment successful!'})
     }
