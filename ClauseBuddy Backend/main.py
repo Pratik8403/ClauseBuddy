@@ -14,17 +14,18 @@ def handler(request):
             }
         }
 
-    # 2. Safety Block: Catches crashes and tells you WHY it failed
+    # 2. Safety Block Starts HERE (Catches ALL errors)
     try:
         api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:
             return {
                 'statusCode': 500, 
                 'headers': {'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({'error': 'CRITICAL: GEMINI_API_KEY is missing in Vercel Settings'})
+                'body': json.dumps({'error': 'CRITICAL: GEMINI_API_KEY is missing'})
             }
 
-        # Initialize Client INSIDE the try block
+        # FIX: Initialize Client INSIDE the try block
+        # If this fails, the 'except' block below will catch it and tell you why
         client = genai.Client(api_key=api_key)
 
         if request.method == 'POST':
@@ -34,7 +35,7 @@ def handler(request):
 
             # CHAT LOGIC
             if user_question:
-                # Using 'gemini-1.5-flash' because it is faster and more stable than 2.0
+                # Use standard 1.5-flash for maximum stability
                 chat_prompt = f"Context: {legal_text[:5000]}\n\nQuestion: {user_question}\nAnswer simply."
                 response = client.models.generate_content(model='gemini-1.5-flash', contents=chat_prompt)
                 return {
@@ -63,7 +64,7 @@ def handler(request):
             }
 
     except Exception as e:
-        # This catches "Model not found" or "Invalid Key" errors
+        # This catches the crash and sends it as JSON so the extension can read it
         print(f"Runtime Error: {str(e)}")
         return {
             'statusCode': 500, 
