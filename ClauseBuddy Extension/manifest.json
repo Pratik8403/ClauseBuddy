@@ -10,7 +10,7 @@
     }
 ],
   "description": "AI Legal Assistant: Simplifying terms and protecting your digital rights.",
-  "permissions": ["sidePanel", "activeTab", "scripting"],
+  "permissions": ["sidePanel", "activeTab", "scripting", "storage"],
   "action": {
     "default_popup": "popup.html"
   },
@@ -19,5 +19,6 @@
   },
   "icons": {
     "128": "icon.png"
-  }
+  },
+  "host_permissions": ["https://*.vercel.app/*"]
 }

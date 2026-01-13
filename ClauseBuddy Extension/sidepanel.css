@@ -1,8 +1,8 @@
 :root {
-    --bg: #070707;
+    --bg: #050505;
     --emerald: #10b981;
     --card-bg: rgba(255, 255, 255, 0.03);
-    --border: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.1);
     --red: #ff4d4d;
     --yellow: #ffb84d;
     --text-dim: #888888;
@@ -31,24 +31,18 @@ body {
 h1 { font-size: 1.2rem; margin: 0; font-weight: 900; letter-spacing: -1px; }
 h1 span { font-weight: 200; color: var(--emerald); }
 
-.status { font-size: 0.65rem; color: #666; display: flex; align-items: center; gap: 6px; letter-spacing: 1px; }
-.pulse {
-    width: 6px; height: 6px; background: var(--emerald);
-    border-radius: 50%; box-shadow: 0 0 8px var(--emerald);
-    animation: pulse-glow 2s infinite;
-}
-
-@keyframes pulse-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.status { font-size: 0.65rem; color: #666; display: flex; align-items: center; gap: 6px; }
+.pulse { width: 6px; height: 6px; background: var(--emerald); border-radius: 50%; box-shadow: 0 0 8px var(--emerald); }
 
 /* Scroll Area */
 .scroll-content {
     flex: 1;
     overflow-y: auto;
-    padding: 15px 20px;
+    padding: 20px;
 }
 
 /* Summary Card */
-.card.summary {
+.summary-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -56,58 +50,89 @@ h1 span { font-weight: 200; color: var(--emerald); }
     margin-bottom: 20px;
 }
 
-.card-header { color: var(--emerald); font-weight: 800; font-size: 0.75rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-#summary-text { margin: 0; font-size: 0.9rem; line-height: 1.5; color: #ccc; }
+/* Findings Grid */
+.findings-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
 
-/* FIXED RISK CARDS */
 .risk-card {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 14px;
+    gap: 12px;
+    padding: 12px 16px;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border);
     border-radius: 12px;
-    margin-bottom: 10px;
     position: relative;
+    overflow: hidden;
 }
 
-/* THE FIX: Rigid width for icons */
+/* Icon Alignment Fix */
 .risk-icon {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0; /* Prevents text from squashing icon */
+    flex-shrink: 0; /* Prevents text from squashing icons */
+    font-size: 1.2rem;
 }
 
-.risk-info {
-    flex: 1; /* Takes up remaining space */
-    min-width: 0; /* Important for text truncation */
-}
-
-.risk-info strong { display: block; font-size: 0.9rem; margin-bottom: 2px; }
+.risk-info strong { display: block; font-size: 0.9rem; }
 .risk-info p { margin: 0; font-size: 0.75rem; color: var(--text-dim); }
 
-/* Left Glow Bars */
-.risk-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
-.risk-card.red::before { background: var(--red); box-shadow: 2px 0 8px rgba(255, 77, 77, 0.3); }
-.risk-card.yellow::before { background: var(--yellow); box-shadow: 2px 0 8px rgba(255, 184, 77, 0.3); }
-.risk-card.green::before { background: var(--emerald); box-shadow: 2px 0 8px rgba(16, 185, 129, 0.3); }
+/* Privacy Score Fix: No more giant black circle */
+.score-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
-/* Chat Input */
-.footer-chat { padding: 15px 20px 25px; }
+.score-circle {
+    position: relative;
+    width: 70px; /* Fixed size */
+    height: 70px; /* Fixed size */
+    flex-shrink: 0;
+}
+
+.circular-chart { width: 70px; height: 70px; }
+.circle-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 3; }
+.circle { fill: none; stroke-width: 3; stroke: var(--emerald); stroke-linecap: round; }
+
+.score-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.score-text span { font-size: 1.1rem; font-weight: 800; display: block; }
+.score-text label { font-size: 0.4rem; color: #555; }
+
+/* Chat Section */
+.chat-display {
+    height: 150px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 10px;
+}
+
+.ai-msg { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 10px; font-size: 0.8rem; line-height: 1.4; color: #ccc; }
+
+/* Footer Input */
+.footer-chat { padding: 15px 20px; background: #000; border-top: 1px solid var(--border); }
 .chat-input-container {
     background: #111;
     border: 1px solid var(--border);
-    border-radius: 100px;
+    border-radius: 10px;
     display: flex;
-    padding: 5px 5px 5px 15px;
+    padding: 5px 5px 5px 12px;
 }
 
-input { background: transparent; border: none; color: white; flex: 1; font-size: 0.8rem; outline: none; }
-button#send-btn {
-    background: var(--emerald); color: black; border: none; border-radius: 50%;
-    width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer;
-}
+input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 0.85rem; }
+button#send-btn { background: var(--emerald); border: none; border-radius: 8px; padding: 6px 10px; cursor: pointer; }

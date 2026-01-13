@@ -5,6 +5,7 @@
     { "src": "ClauseBuddy Frontend/*", "use": "@vercel/static" }
   ],
   "rewrites": [
+    { "source": "/api/analyze", "destination": "ClauseBuddy Backend/main.py" },
     { "source": "/api/(.*)", "destination": "ClauseBuddy Backend/main.py" },
     { "source": "/download", "destination": "/ClauseBuddy Frontend/download.html" },
     { "source": "/payment", "destination": "/ClauseBuddy Frontend/payment.html" },

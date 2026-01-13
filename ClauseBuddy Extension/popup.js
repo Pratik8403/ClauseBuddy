@@ -1,10 +1,21 @@
-document.getElementById('analyzeBtn').addEventListener('click', async () => {
-    // 1. Rename the variable to 'currWindow' to avoid the collision
-    const currWindow = await chrome.windows.getCurrent();
-    
-    // 2. Open the side panel
-    await chrome.sidePanel.open({ windowId: currWindow.id });
+document.addEventListener('DOMContentLoaded', () => {
+    const analyzeBtn = document.getElementById('open-sidebar');
 
-    // 3. Now the global window.close() will work correctly
-    window.close(); 
+    if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', () => {
+            // Get the ID of the window where the popup was clicked
+            chrome.windows.getCurrent((currentWindow) => {
+                // Open the side panel specifically for this window
+                chrome.sidePanel.open({ windowId: currentWindow.id })
+                    .then(() => {
+                        console.log("Side panel active.");
+                        // Close the small popup automatically
+                        window.close(); 
+                    })
+                    .catch((error) => {
+                        console.error("SidePanel open failed:", error);
+                    });
+            });
+        });
+    }
 });
