@@ -1,15 +1,15 @@
 {
   "version": 2,
   "builds": [
-    { "src": "ClauseBuddy Backend/main.py", "use": "@vercel/python" },
-    { "src": "ClauseBuddy Frontend/*", "use": "@vercel/static" }
+    { "src": "backend/main.py", "use": "@vercel/python" },
+    { "src": "frontend/*", "use": "@vercel/static" }
   ],
   "rewrites": [
-    { "source": "/api/analyze", "destination": "ClauseBuddy Backend/main.py" },
-    { "source": "/api/(.*)", "destination": "ClauseBuddy Backend/main.py" },
-    { "source": "/download", "destination": "/ClauseBuddy Frontend/download.html" },
-    { "source": "/payment", "destination": "/ClauseBuddy Frontend/payment.html" },
-    { "source": "/dashboard", "destination": "/ClauseBuddy Frontend/dashboard.html" },
-    { "source": "/(.*)", "destination": "/ClauseBuddy Frontend/$1" }
+    { "source": "/api/analyze", "destination": "backend/main.py" },
+    { "source": "/api/(.*)", "destination": "backend/main.py" },
+    { "source": "/download", "destination": "/frontend/download.html" },
+    { "source": "/payment", "destination": "/frontend/payment.html" },
+    { "source": "/dashboard", "destination": "/frontend/dashboard.html" },
+    { "source": "/(.*)", "destination": "/frontend/$1" }
   ]
 }
