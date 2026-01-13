@@ -1,21 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const analyzeBtn = document.getElementById('open-sidebar');
+    const analyzeBtn = document.getElementById('analyzeBtn');
 
     if (analyzeBtn) {
-        analyzeBtn.addEventListener('click', () => {
-            // Get the ID of the window where the popup was clicked
-            chrome.windows.getCurrent((currentWindow) => {
-                // Open the side panel specifically for this window
-                chrome.sidePanel.open({ windowId: currentWindow.id })
-                    .then(() => {
-                        console.log("Side panel active.");
-                        // Close the small popup automatically
-                        window.close(); 
-                    })
-                    .catch((error) => {
-                        console.error("SidePanel open failed:", error);
-                    });
-            });
+        analyzeBtn.addEventListener('click', async () => {
+            try {
+                // 1. Get the currently active tab
+                const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+                if (!tab) {
+                    console.error("No active tab found.");
+                    return;
+                }
+
+                // 2. Open the side panel for the window that owns this tab
+                await chrome.sidePanel.open({ windowId: tab.windowId });
+                
+                // 3. Close the popup only after success
+                window.close();
+            } catch (error) {
+                console.error("Failed to open Side Panel:", error);
+                // This alerts you if there is a specific permission error
+                alert("Error: " + error.message);
+            }
         });
     }
 });
