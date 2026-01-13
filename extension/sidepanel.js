@@ -1,4 +1,4 @@
-const VERCEL_URL = "https://clausebuddy-mu.vercel.app/api/analyze";
+const VERCEL_URL = "https://clausebuddy.onrender.com/analyze";
 let savedLegalText = ""; 
 
 chrome.runtime.onMessage.addListener((message) => {
