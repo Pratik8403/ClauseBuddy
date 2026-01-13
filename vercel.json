@@ -1,18 +1,16 @@
 {
   "version": 2,
-
+  "functions": {
+    "api/*.py": {
+      "runtime": "python3.11"
+    }
+  },
   "builds": [
     { "src": "api/*.py", "use": "@vercel/python" },
     { "src": "frontend/**", "use": "@vercel/static" }
   ],
-
   "routes": [
     { "src": "^/api/(.*)$", "dest": "/api/$1.py" },
-
-    { "src": "^/download$", "dest": "/frontend/download.html" },
-    { "src": "^/payment$", "dest": "/frontend/payment.html" },
-    { "src": "^/dashboard$", "dest": "/frontend/dashboard.html" },
-
     { "src": "^/(.*)$", "dest": "/frontend/$1" }
   ]
 }
