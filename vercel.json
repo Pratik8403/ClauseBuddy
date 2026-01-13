@@ -1,15 +1,18 @@
 {
   "version": 2,
+
   "builds": [
-    { "src": "main.py", "use": "@vercel/python" },
-    { "src": "frontend/*", "use": "@vercel/static" }
+    { "src": "api/*.py", "use": "@vercel/python" },
+    { "src": "frontend/**", "use": "@vercel/static" }
   ],
-  "rewrites": [
-    { "source": "/api/analyze", "destination": "main.py" },
-    { "source": "/api/(.*)", "destination": "main.py" },
-    { "source": "/download", "destination": "/frontend/download.html" },
-    { "source": "/payment", "destination": "/frontend/payment.html" },
-    { "source": "/dashboard", "destination": "/frontend/dashboard.html" },
-    { "source": "/(.*)", "destination": "/frontend/$1" }
+
+  "routes": [
+    { "src": "^/api/(.*)$", "dest": "/api/$1.py" },
+
+    { "src": "^/download$", "dest": "/frontend/download.html" },
+    { "src": "^/payment$", "dest": "/frontend/payment.html" },
+    { "src": "^/dashboard$", "dest": "/frontend/dashboard.html" },
+
+    { "src": "^/(.*)$", "dest": "/frontend/$1" }
   ]
 }
