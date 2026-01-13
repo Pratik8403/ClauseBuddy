@@ -1,5 +1,3 @@
-import json
-
 def handler(event, context):
     return {
         "statusCode": 200,
@@ -7,7 +5,5 @@ def handler(event, context):
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*"
         },
-        "body": json.dumps({
-            "status": "backend alive"
-        })
+        "body": "{\"alive\":true}"
     }
