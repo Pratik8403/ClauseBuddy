@@ -106,24 +106,16 @@ function waitForContent(callback, timeout = 3000) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "GET_PAGE_TEXT") {
-    try {
-      // Wait for dynamic content before extracting
-      waitForContent((text) => {
-        console.log("Extracted length:", text.length);
-        sendResponse({
-          success: true,
-          text: text
-        });
-      });
-      
-      // Return true to indicate async response
-      return true;
-    } catch (err) {
-      console.error("Extraction failed:", err);
+    // Wait for dynamic content before extracting
+    waitForContent((text) => {
+      console.log("Extracted length:", text.length);
       sendResponse({
-        success: false,
-        error: "Could not extract page text"
+        success: true,
+        text: text
       });
-    }
+    });
+    
+    // Return true to indicate async response
+    return true;
   }
 });
