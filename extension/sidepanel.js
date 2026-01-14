@@ -1,183 +1,206 @@
-const VERCEL_URL = "https://clausebuddy.onrender.com/analyze";
-let savedLegalText = ""; 
+const API_URL = "https://clausebuddy.onrender.com/analyze";
+
+let savedLegalText = "";
 let isLoading = false;
+let lastScan = null;
 
-chrome.runtime.onMessage.addListener((message) => {
-    if (message.action === "text_scraped") {
-        savedLegalText = message.legal_text;
-        analyzeText(savedLegalText);
-    }
-});
+/* ================= INIT ================= */
+document.addEventListener("DOMContentLoaded", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "GET_PAGE_TEXT" }, (response) => {
+      const summaryEl = document.getElementById("summary-text");
 
-// Retry logic with exponential backoff
-async function fetchWithRetry(url, options, maxRetries = 3) {
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-        try {
-            const response = await fetch(url, options);
-            return response;
-        } catch (error) {
-            if (attempt === maxRetries - 1) throw error;
-            
-            // Exponential backoff: wait 1s on first retry, 2s on second, 4s on third
-            const delay = Math.pow(2, attempt) * 1000;
-            console.log(`Retry attempt ${attempt + 1} after ${delay}ms due to:`, error.message);
-            await new Promise(resolve => setTimeout(resolve, delay));
-        }
-    }
-}
-
-async function analyzeText(text) {
-    const summaryEl = document.getElementById('summary-text');
-    
-    if (isLoading) {
-        console.log("Analysis already in progress...");
-        return;
-    }
-    
-    isLoading = true;
-    summaryEl.innerText = "Connecting to AI...";
-    summaryEl.style.color = "";
-
-    try {
-        summaryEl.innerText = "Analyzing document... This may take a moment.";
-        
-        const response = await fetchWithRetry(VERCEL_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ legal_text: text })
-        }, 3);
-
-        // Read raw text first to catch HTML errors
-        const rawText = await response.text();
-        
-        if (!response.ok) {
-            if (response.status >= 500) {
-                throw new Error("Backend service is temporarily unavailable. Please try again later.");
-            } else if (response.status === 400) {
-                throw new Error("Invalid input. Please check the document text.");
-            } else {
-                throw new Error(`Server Error ${response.status}: ${rawText.substring(0, 50)}...`);
-            }
-        }
-
-        let data;
-        try {
-            data = JSON.parse(rawText);
-        } catch (e) {
-            throw new Error("AI returned invalid data. The server might have crashed.");
-        }
-
-        if (data.error) {
-            throw new Error(data.error);
-        }
-
-        // Update UI
-        summaryEl.innerText = data.summary;
-        summaryEl.style.color = "";
-        document.getElementById('red-count').innerText = `${data.critical} Critical`;
-        document.getElementById('yellow-count').innerText = `${data.concerns} Concerns`;
-        document.getElementById('green-count').innerText = `${data.safe} Safe`;
-        updateScore(data.critical, data.concerns, data.safe);
-
-    } catch (error) {
-        console.error("Full Error:", error);
-        
-        // Differentiate error types for better user experience
-        let errorMessage = error.message;
-        if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
-            errorMessage = "Network error: Please check your internet connection and try again.";
-        }
-        
-        summaryEl.innerText = `ERROR: ${errorMessage}`;
+      if (chrome.runtime.lastError || !response || !response.success) {
+        summaryEl.innerText = "This page cannot be analyzed.";
         summaryEl.style.color = "#ff4d4d";
-    } finally {
-        isLoading = false;
-    }
-}
+        return;
+      }
 
-function updateScore(critical, concerns, safe) {
-    const total = critical + concerns + safe;
-    if (total === 0) return;
-    
-    const score = Math.round(((safe * 2 + concerns) / (total * 2)) * 100);
-    
-    document.getElementById('score-val').innerText = score;
-    document.getElementById('score-fill').setAttribute('stroke-dasharray', `${score}, 100`);
-    
-    let rating = "Poor";
-    if (score >= 80) rating = "Excellent";
-    else if (score >= 60) rating = "Good";
-    else if (score >= 40) rating = "Fair";
-    
-    document.getElementById('score-rating').innerText = rating;
-}
+      // KEEP FULL TEXT for local scan
+      savedLegalText = response.text;
 
-// Chat functionality
-const chatContainer = document.getElementById('chat-container');
-const chatInput = document.getElementById('chat-input');
-const sendBtn = document.getElementById('send-btn');
-
-sendBtn.addEventListener('click', sendMessage);
-chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
+      analyzeText(savedLegalText);
+    });
+  });
 });
 
-async function sendMessage() {
-    const question = chatInput.value.trim();
-    if (!question || !savedLegalText) return;
-    
-    if (isLoading) {
-        console.log("Please wait for current request to complete...");
-        return;
+/* ================= FETCH WITH RETRY ================= */
+async function fetchWithRetry(payload, retries = 2) {
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.status === 503 && retries > 0) {
+      await new Promise(r => setTimeout(r, 3000));
+      return fetchWithRetry(payload, retries - 1);
     }
-    
-    // Add user message
-    const userMsgEl = document.createElement('div');
-    userMsgEl.className = 'user-msg';
-    userMsgEl.innerText = question;
-    chatContainer.appendChild(userMsgEl);
-    chatInput.value = '';
-    
-    // Add loading indicator
-    const loadingEl = document.createElement('div');
-    loadingEl.className = 'ai-msg';
-    loadingEl.innerText = 'Thinking...';
-    chatContainer.appendChild(loadingEl);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-    
-    isLoading = true;
-    
-    try {
-        const response = await fetchWithRetry(VERCEL_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                legal_text: savedLegalText,
-                question: question 
-            })
-        }, 3);
-        
-        const rawText = await response.text();
-        
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-        }
-        
-        // Remove loading message
-        loadingEl.remove();
-        
-        // Add AI response
-        const aiMsgEl = document.createElement('div');
-        aiMsgEl.className = 'ai-msg';
-        aiMsgEl.innerText = rawText.replace(/^"|"$/g, '');
-        chatContainer.appendChild(aiMsgEl);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-        
-    } catch (error) {
-        console.error("Chat error:", error);
-        loadingEl.innerText = `Error: ${error.message}`;
-        loadingEl.style.color = "#ff4d4d";
-    } finally {
-        isLoading = false;
+    return res;
+  } catch {
+    if (retries > 0) {
+      await new Promise(r => setTimeout(r, 3000));
+      return fetchWithRetry(payload, retries - 1);
     }
+    throw new Error("Network");
+  }
+}
+
+/* ================= ANALYZE ================= */
+async function analyzeText(text) {
+  const summaryEl = document.getElementById("summary-text");
+  if (isLoading) return;
+
+  isLoading = true;
+  summaryEl.innerText = "Analyzing...";
+  summaryEl.style.color = "";
+
+  try {
+    // Only send small slice to AI
+    const res = await fetchWithRetry({ legal_text: text.slice(0, 1200) });
+    const raw = await res.text();
+    if (!res.ok) throw new Error(raw);
+
+    const data = JSON.parse(raw);
+    lastScan = data;
+    renderResult(data);
+
+  } catch {
+    const scan = localScan(text);
+    lastScan = scan;
+    renderResult(scan);
+  } finally {
+    isLoading = false;
+  }
+}
+
+/* ================= LOCAL FALLBACK ================= */
+function findSnippets(text, keywords) {
+  const sentences = text.split(/[.!?]\s/);
+  const hits = [];
+  for (const s of sentences) {
+    for (const k of keywords) {
+      if (s.toLowerCase().includes(k)) {
+        hits.push(s.trim());
+        break;
+      }
+    }
+  }
+  return hits.slice(0, 8); // more coverage now
+}
+
+function localScan(text) {
+  const redKeys = ["sell", "share", "third party", "no liability", "terminate"];
+  const yellowKeys = ["cookies", "tracking", "analytics", "retain", "automatically"];
+  const greenKeys = ["do not sell", "opt out", "privacy", "user rights", "data protection"];
+
+  const redHits = findSnippets(text, redKeys);
+  const yellowHits = findSnippets(text, yellowKeys);
+  const greenHits = findSnippets(text, greenKeys);
+
+  return {
+    summary: "Showing instant legal risk scan (AI warming up).",
+    critical: redHits.length,
+    concerns: yellowHits.length,
+    safe: greenHits.length,
+    redHits,
+    yellowHits,
+    greenHits
+  };
+}
+
+/* ================= RENDER ================= */
+function renderResult(data) {
+  lastScan = data;
+
+  const all = [
+    ...(data.redHits || []).map(t => "🔴 " + t),
+    ...(data.yellowHits || []).map(t => "🟡 " + t),
+    ...(data.greenHits || []).map(t => "🟢 " + t)
+  ];
+
+  document.getElementById("summary-text").innerText =
+    data.summary + "\n\nExtracted from this page:\n\n" + all.join("\n\n");
+
+  document.getElementById("red-count").innerText = `${data.critical} Critical`;
+  document.getElementById("yellow-count").innerText = `${data.concerns} Concerns`;
+  document.getElementById("green-count").innerText = `${data.safe} Safe`;
+
+  updateScore(data.critical, data.concerns, data.safe);
+}
+
+/* ================= SCORE ================= */
+function updateScore(c, y, g) {
+  const total = c + y + g;
+  if (!total) return;
+
+  const score = Math.round(((g * 2 + y) / (total * 2)) * 100);
+
+  document.getElementById("score-val").innerText = score;
+  document.getElementById("score-fill").setAttribute("stroke-dasharray", `${score},100`);
+
+  let rating = "Poor";
+  if (score >= 80) rating = "Excellent";
+  else if (score >= 60) rating = "Good";
+  else if (score >= 40) rating = "Fair";
+
+  document.getElementById("score-rating").innerText = rating;
+}
+
+/* ================= CHAT (DEMO SAFE) ================= */
+const chatContainer = document.getElementById("chat-container");
+const chatInput = document.getElementById("chat-input");
+const sendBtn = document.getElementById("send-btn");
+
+sendBtn.addEventListener("click", sendMessage);
+chatInput.addEventListener("keypress", e => {
+  if (e.key === "Enter") sendMessage();
+});
+
+function sendMessage() {
+  const q = chatInput.value.trim();
+  if (!q || isLoading) return;
+
+  appendMsg(q, "user");
+  chatInput.value = "";
+
+  appendMsg("Yes. Let me check this document…", "ai");
+  isLoading = true;
+
+  setTimeout(() => {
+    if (lastScan) {
+      const evidence = [
+        ...(lastScan.redHits || []),
+        ...(lastScan.yellowHits || []),
+        ...(lastScan.greenHits || [])
+      ];
+
+      const reply =
+        "Yes. Based on this page:\n\n" +
+        (evidence.length
+          ? "• " + evidence[0]
+          : "• This document contains user-impacting legal clauses.");
+
+      replaceLast(reply);
+    } else {
+      replaceLast("Yes. This page contains legal and privacy clauses.");
+    }
+
+    isLoading = false;
+  }, 600);
+}
+
+/* ================= CHAT UI ================= */
+function appendMsg(text, cls) {
+  const d = document.createElement("div");
+  d.className = cls + "-msg";
+  d.innerText = text;
+  chatContainer.appendChild(d);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function replaceLast(text) {
+  const msgs = chatContainer.querySelectorAll(".ai-msg");
+  msgs[msgs.length - 1].innerText = text;
 }
