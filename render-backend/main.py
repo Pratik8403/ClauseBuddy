@@ -1,10 +1,13 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 import os
 import requests
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+try:
+    from urllib3.util.retry import Retry
+except ImportError:
+    from requests.packages.urllib3.util.retry import Retry
 import json
 
 app = FastAPI()
@@ -23,7 +26,8 @@ class AnalyzeRequest(BaseModel):
     legal_text: str
     question: str = ""
     
-    @validator('legal_text')
+    @field_validator('legal_text')
+    @classmethod
     def validate_legal_text(cls, v):
         if not v or len(v.strip()) == 0:
             raise ValueError("legal_text cannot be empty")

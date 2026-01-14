@@ -17,9 +17,12 @@ function extractVisibleText() {
             return NodeFilter.FILTER_REJECT;
           }
           
-          // Check if element is visible
-          if (parent && parent.offsetParent === null && parent.tagName !== 'BODY') {
-            return NodeFilter.FILTER_REJECT;
+          // Check if element is visible using computed styles
+          if (parent) {
+            const style = window.getComputedStyle(parent);
+            if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+              return NodeFilter.FILTER_REJECT;
+            }
           }
           
           return NodeFilter.FILTER_ACCEPT;

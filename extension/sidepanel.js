@@ -18,7 +18,7 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
         } catch (error) {
             if (attempt === maxRetries - 1) throw error;
             
-            // Exponential backoff: 1s, 2s, 4s
+            // Exponential backoff: wait 1s on first retry, 2s on second, 4s on third
             const delay = Math.pow(2, attempt) * 1000;
             console.log(`Retry attempt ${attempt + 1} after ${delay}ms due to:`, error.message);
             await new Promise(resolve => setTimeout(resolve, delay));
