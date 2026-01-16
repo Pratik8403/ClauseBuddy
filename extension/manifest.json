@@ -2,6 +2,17 @@
   "manifest_version": 3,
   "name": "ClauseBuddy AI",
   "version": "1.0.5",
+   "web_accessible_resources": [
+    {
+      "resources": [
+        "clauses/red_clauses.json",
+        "clauses/yellow_clauses.json",
+        "clauses/green_clauses.json",
+        "clauses/hi_translations.json"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

@@ -1,0 +1,129 @@
+[
+  {
+    "id": "class_action_waiver",
+    "patterns": [
+      "waive any right to a class action",
+      "class action waiver",
+      "representative proceeding",
+      "individual basis only",
+      "not as a plaintiff or class member",
+      "join or consolidate claims",
+      "collective action",
+      "private attorney general capacity",
+      "litigated on a class basis"
+    ],
+    "explanation_en": "You waive your right to join a class action lawsuit against the company.",
+    "explanation_hi": "आप कंपनी के खिलाफ सामूहिक मुकदमे (Class Action) में शामिल होने का अधिकार छोड़ रहे हैं।"
+  },
+  {
+    "id": "mandatory_arbitration",
+    "patterns": [
+      "binding arbitration",
+      "resolve disputes through arbitration",
+      "waive the right to a trial by jury",
+      "arbitration agreement",
+      "settled by binding arbitration",
+      "jams rules",
+      "american arbitration association",
+      "arbitrator shall have exclusive authority",
+      "final and binding decisions"
+    ],
+    "explanation_en": "Disputes must be resolved privately outside of court, without a jury.",
+    "explanation_hi": "विवादों का समाधान अदालत के बाहर निजी मध्यस्थता (Arbitration) द्वारा किया जाएगा।"
+  },
+  {
+    "id": "indemnification",
+    "patterns": [
+      "you agree to indemnify",
+      "hold harmless",
+      "defend and indemnify",
+      "indemnify us against any claims",
+      "liable for legal fees",
+      "arising out of your breach",
+      "costs and attorneys fees",
+      "losses incurred by us",
+      "responsible for all damages"
+    ],
+    "explanation_en": "You must pay the company's legal fees if someone sues them because of you.",
+    "explanation_hi": "यदि आपकी वजह से कंपनी पर कोई मुकदमा होता है, तो उसका खर्च आपको उठाना होगा।"
+  },
+  {
+    "id": "limitation_of_liability",
+    "patterns": [
+      "liability shall not exceed",
+      "maximum liability",
+      "indirect or consequential damages",
+      "incidental damages",
+      "amount you paid",
+      "total liability limited to",
+      "punitive damages",
+      "to the maximum extent permitted by law",
+      "not liable for any lost profits"
+    ],
+    "explanation_en": "The company's financial liability is capped at a very low amount (often $100).",
+    "explanation_hi": "कंपनी की वित्तीय जिम्मेदारी बहुत कम राशि (अक्सर $100) तक सीमित है।"
+  },
+  {
+    "id": "unilateral_termination",
+    "patterns": [
+      "terminate your access without notice",
+      "suspend or terminate",
+      "sole discretion",
+      "without prior notice",
+      "for any reason or no reason",
+      "immediate termination",
+      "refuse service to anyone",
+      "disable your account",
+      "block your email"
+    ],
+    "explanation_en": "They can ban you or delete your account instantly without giving a reason.",
+    "explanation_hi": "वे बिना किसी कारण के तुरंत आपका अकाउंट बंद या प्रतिबंधित कर सकते हैं।"
+  },
+  {
+    "id": "broad_content_license",
+    "patterns": [
+      "perpetual license",
+      "irrevocable license",
+      "royalty-free",
+      "sub-licensable",
+      "worldwide license to use",
+      "create derivative works",
+      "reproduce and distribute",
+      "commercialize your content",
+      "waive moral rights"
+    ],
+    "explanation_en": "You grant them a permanent right to use, sell, or modify your content forever.",
+    "explanation_hi": "आप उन्हें अपनी सामग्री का उपयोग या बिक्री करने का स्थायी अधिकार दे रहे हैं।"
+  },
+  {
+    "id": "no_warranty_as_is",
+    "patterns": [
+      "provided on an as is basis",
+      "as available",
+      "disclaim all warranties",
+      "fitness for a particular purpose",
+      "merchantability",
+      "no warranty of any kind",
+      "without warranty",
+      "errors or omissions",
+      "does not warrant that"
+    ],
+    "explanation_en": "The service is provided 'as is' with no guarantee it will actually work.",
+    "explanation_hi": "सेवा 'जैसी है' वैसी ही दी जा रही है, इसके सही काम करने की कोई गारंटी नहीं है।"
+  },
+  {
+    "id": "jurisdiction_lock",
+    "patterns": [
+      "exclusive jurisdiction",
+      "courts located in",
+      "governed by the laws of",
+      "venue shall be",
+      "submit to the personal jurisdiction",
+      "laws of the state of",
+      "santa clara county",
+      "delaware chancery"
+    ],
+    "explanation_en": "You can only sue them in a specific location (often California or Delaware).",
+    "explanation_hi": "आप उन पर केवल एक विशिष्ट स्थान (जैसे कैलिफ़ोर्निया) में ही मुकदमा कर सकते हैं।"
+  }
+]

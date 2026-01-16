@@ -1,0 +1,115 @@
+[
+  {
+    "id": "right_to_delete",
+    "patterns": [
+      "delete your account",
+      "right to erasure",
+      "remove your personal data",
+      "permanently delete",
+      "request deletion",
+      "right to be forgotten",
+      "close your account",
+      "erase your information"
+    ],
+    "explanation_en": "You have the clear right to permanently delete your account and data.",
+    "explanation_hi": "आपको अपना अकाउंट और डेटा हमेशा के लिए हटाने का पूर्ण अधिकार है।"
+  },
+  {
+    "id": "data_portability",
+    "patterns": [
+      "request a copy",
+      "download your data",
+      "data portability",
+      "export your data",
+      "access your information",
+      "machine-readable format",
+      "transfer your data",
+      "right to know"
+    ],
+    "explanation_en": "You can download a copy of all the data they hold about you.",
+    "explanation_hi": "आप अपने डेटा की एक प्रति डाउनलोड कर सकते हैं जो उनके पास मौजूद है।"
+  },
+  {
+    "id": "opt_out_marketing",
+    "patterns": [
+      "unsubscribe link",
+      "opt-out of marketing",
+      "manage your preferences",
+      "withdraw consent",
+      "disable cookies",
+      "do not sell my info",
+      "promotional emails",
+      "change your settings"
+    ],
+    "explanation_en": "You can easily opt-out of marketing emails and tracking.",
+    "explanation_hi": "आप मार्केटिंग ईमेल और ट्रैकिंग से आसानी से बाहर निकल (Opt-out) सकते हैं।"
+  },
+  {
+    "id": "security_standards",
+    "patterns": [
+      "encryption at rest",
+      "ssl/tls encryption",
+      "industry standard security",
+      "secure socket layer",
+      "physical safeguards",
+      "access controls",
+      "protect against unauthorized access",
+      "security measures"
+    ],
+    "explanation_en": "They use industry-standard encryption to protect your data.",
+    "explanation_hi": "वे आपके डेटा की सुरक्षा के लिए उद्योग-मानक एन्क्रिप्शन का उपयोग करते हैं।"
+  },
+  {
+    "id": "breach_notification",
+    "patterns": [
+      "notify you of a breach",
+      "data breach notification",
+      "compromise of security",
+      "unauthorized access notification",
+      "alert you via email",
+      "without undue delay",
+      "inform affected users"
+    ],
+    "explanation_en": "They promise to alert you quickly if your data is stolen or compromised.",
+    "explanation_hi": "वे वादा करते हैं कि डेटा चोरी होने पर वे आपको तुरंत सूचित करेंगे।"
+  },
+  {
+    "id": "data_minimization",
+    "patterns": [
+      "only collect what is necessary",
+      "data minimization",
+      "limited to the purpose",
+      "not collect sensitive",
+      "necessary for the performance",
+      "relevant and limited"
+    ],
+    "explanation_en": "They promise to only collect the data actually needed for the service.",
+    "explanation_hi": "वे केवल वही डेटा इकट्ठा करने का वादा करते हैं जो सेवा के लिए जरूरी है।"
+  },
+  {
+    "id": "prior_consent_updates",
+    "patterns": [
+      "notify you of material changes",
+      "seek your consent",
+      "prior written notice",
+      "email you before changes",
+      "opportunity to review",
+      "agree to the new terms"
+    ],
+    "explanation_en": "They will ask for your permission before making major changes to the rules.",
+    "explanation_hi": "नियमों में बड़े बदलाव करने से पहले वे आपकी अनुमति लेंगे।"
+  },
+  {
+    "id": "children_privacy",
+    "patterns": [
+      "not knowingly collect",
+      "under the age of 13",
+      "parental consent",
+      "delete children's data",
+      "protecting children's privacy",
+      "family friendly"
+    ],
+    "explanation_en": "Specific protections are in place to prevent collecting data from children.",
+    "explanation_hi": "बच्चों का डेटा इकट्ठा न करने के लिए विशेष सुरक्षा उपाय मौजूद हैं।"
+  }
+]

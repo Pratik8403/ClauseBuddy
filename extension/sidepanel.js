@@ -1,206 +1,346 @@
-const API_URL = "https://clausebuddy.onrender.com/analyze";
+/* =========================================================
+   ClauseBuddy – Side Panel Logic (STABLE DEMO VERSION)
+   AI-first with deterministic rule-based fallback
+========================================================= */
 
-let savedLegalText = "";
-let isLoading = false;
-let lastScan = null;
 
-/* ================= INIT ================= */
-document.addEventListener("DOMContentLoaded", () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "GET_PAGE_TEXT" }, (response) => {
-      const summaryEl = document.getElementById("summary-text");
+const BACKEND_URL = "https://clausebuddy.onrender.com/analyze";
+const CLAUSE_PATH = "clauses/";
 
-      if (chrome.runtime.lastError || !response || !response.success) {
-        summaryEl.innerText = "This page cannot be analyzed.";
-        summaryEl.style.color = "#ff4d4d";
-        return;
-      }
+let rules = { red: [], yellow: [], green: [] };
+let currentLang = "en";
+let currentMode = "AI"; // AI | FALLBACK
+let extractedText = "";
+let fallbackResult = null;
+let aiResult = null;
 
-      // KEEP FULL TEXT for local scan
-      savedLegalText = response.text;
+/* ======================= INIT ======================= */
 
-      analyzeText(savedLegalText);
-    });
-  });
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadClauseLibraries();
+  bindChatEvents();
 });
 
-/* ================= FETCH WITH RETRY ================= */
-async function fetchWithRetry(payload, retries = 2) {
+/* ======================= LOAD CLAUSE JSON ======================= */
+
+async function loadClauseLibraries() {
   try {
-    const res = await fetch(API_URL, {
+    const [r, y, g] = await Promise.all([
+      fetch(chrome.runtime.getURL(CLAUSE_PATH + "red_clauses.json")).then(r => r.json()),
+      fetch(chrome.runtime.getURL(CLAUSE_PATH + "yellow_clauses.json")).then(r => r.json()),
+      fetch(chrome.runtime.getURL(CLAUSE_PATH + "green_clauses.json")).then(r => r.json())
+    ]);
+
+    rules.red = r;
+    rules.yellow = y;
+    rules.green = g;
+
+    console.log("Clause libraries loaded");
+  } catch (e) {
+    console.error("Failed to load clause libraries", e);
+  }
+}
+
+/* ======================= MESSAGE FROM POPUP ======================= */
+
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg.action === "text_scraped") {
+    extractedText = msg.legal_text || "";
+    analyzeDocument(extractedText);
+  }
+});
+
+/* ======================= MAIN ANALYSIS ======================= */
+
+async function analyzeDocument(text) {
+  showLoading();
+  aiResult = null;
+  fallbackResult = null;
+  currentMode = "AI";
+
+  try {
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 12000);
+
+    const res = await fetch(BACKEND_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ legal_text: text }),
+      signal: controller.signal
     });
 
-    if (res.status === 503 && retries > 0) {
-      await new Promise(r => setTimeout(r, 3000));
-      return fetchWithRetry(payload, retries - 1);
-    }
-    return res;
+    if (!res.ok) throw new Error("AI unavailable");
+
+    const data = await res.json();
+    aiResult = data;
+    currentMode = "AI";
+    renderAI(data);
+
   } catch {
-    if (retries > 0) {
-      await new Promise(r => setTimeout(r, 3000));
-      return fetchWithRetry(payload, retries - 1);
-    }
-    throw new Error("Network");
+    console.warn("AI unavailable → switching to fallback");
+    currentMode = "FALLBACK";
+    fallbackResult = runRuleScan(text);
+    renderFallback(fallbackResult);
   }
 }
 
-/* ================= ANALYZE ================= */
-async function analyzeText(text) {
-  const summaryEl = document.getElementById("summary-text");
-  if (isLoading) return;
+/* ======================= RULE ENGINE ======================= */
 
-  isLoading = true;
-  summaryEl.innerText = "Analyzing...";
-  summaryEl.style.color = "";
+function runRuleScan(text) {
+  const normalized = text.toLowerCase();
+  const found = new Set();
+  const result = { red: [], yellow: [], green: [] };
 
-  try {
-    // Only send small slice to AI
-    const res = await fetchWithRetry({ legal_text: text.slice(0, 1200) });
-    const raw = await res.text();
-    if (!res.ok) throw new Error(raw);
+  function scan(list, target) {
+    list.forEach(clause => {
+      if (found.has(clause.id)) return;
 
-    const data = JSON.parse(raw);
-    lastScan = data;
-    renderResult(data);
+      const matched = clause.patterns.some(p => {
+        try {
+          return new RegExp(p, "i").test(normalized);
+        } catch {
+          return false;
+        }
+      });
 
-  } catch {
-    const scan = localScan(text);
-    lastScan = scan;
-    renderResult(scan);
-  } finally {
-    isLoading = false;
-  }
-}
-
-/* ================= LOCAL FALLBACK ================= */
-function findSnippets(text, keywords) {
-  const sentences = text.split(/[.!?]\s/);
-  const hits = [];
-  for (const s of sentences) {
-    for (const k of keywords) {
-      if (s.toLowerCase().includes(k)) {
-        hits.push(s.trim());
-        break;
+      if (matched) {
+        found.add(clause.id);
+        target.push(clause);
       }
-    }
+    });
   }
-  return hits.slice(0, 8); // more coverage now
+
+  scan(rules.red, result.red);
+  scan(rules.yellow, result.yellow);
+  scan(rules.green, result.green);
+
+  return result;
 }
 
-function localScan(text) {
-  const redKeys = ["sell", "share", "third party", "no liability", "terminate"];
-  const yellowKeys = ["cookies", "tracking", "analytics", "retain", "automatically"];
-  const greenKeys = ["do not sell", "opt out", "privacy", "user rights", "data protection"];
+/* ======================= RENDER AI ======================= */
 
-  const redHits = findSnippets(text, redKeys);
-  const yellowHits = findSnippets(text, yellowKeys);
-  const greenHits = findSnippets(text, greenKeys);
+function renderAI(data) {
+  const summary =
+    currentLang === "hi" && data.summary_hi
+      ? data.summary_hi
+      : data.summary;
 
-  return {
-    summary: "Showing instant legal risk scan (AI warming up).",
-    critical: redHits.length,
-    concerns: yellowHits.length,
-    safe: greenHits.length,
-    redHits,
-    yellowHits,
-    greenHits
-  };
+  document.getElementById("summary-text").innerHTML = `
+    <div class="mode-badge ai">AI Analysis Active</div>
+    <p>${summary}</p>
+  `;
+
+  updateCounts(data.critical, data.concerns, data.safe);
+  updateScore(calcScore(data.critical, data.concerns));
 }
 
-/* ================= RENDER ================= */
-function renderResult(data) {
-  lastScan = data;
+/* ======================= RENDER FALLBACK ======================= */
 
-  const all = [
-    ...(data.redHits || []).map(t => "🔴 " + t),
-    ...(data.yellowHits || []).map(t => "🟡 " + t),
-    ...(data.greenHits || []).map(t => "🟢 " + t)
+function renderFallback(data) {
+  const summary = buildFallbackSummary(data);
+
+  let html = `
+    <div class="mode-badge fallback">
+      Rule-based scan (AI temporarily unavailable)
+    </div>
+    <p>${summary}</p>
+  `;
+
+  html += renderSection("Critical", data.red, "red");
+  html += renderSection("Concerns", data.yellow, "yellow");
+  html += renderSection("Safe", data.green, "green");
+
+  document.getElementById("summary-text").innerHTML = html;
+
+  updateCounts(data.red.length, data.yellow.length, data.green.length);
+  updateScore(calcScore(data.red.length, data.yellow.length));
+}
+
+/* ======================= CLAUSE-AWARE SUMMARY ======================= */
+
+function buildFallbackSummary(data) {
+  const isHi = currentLang === "hi";
+  let parts = [];
+
+  const redIds = data.red.map(c => c.id);
+
+  if (redIds.some(id => id.includes("arbitration") || id.includes("class"))) {
+    parts.push(
+      isHi
+        ? "इस नीति में मध्यस्थता और सामूहिक मुकदमों से जुड़े प्रतिबंध शामिल हैं, जिससे आपके कानूनी अधिकार सीमित हो सकते हैं।"
+        : "This policy includes arbitration and class-action restrictions, limiting your ability to take legal action."
+    );
+  }
+
+  if (redIds.some(id => id.includes("liability"))) {
+    parts.push(
+      isHi
+        ? "कंपनी अपनी कानूनी जिम्मेदारी को सीमित करने का प्रयास करती है।"
+        : "The company attempts to limit its legal responsibility for damages."
+    );
+  }
+
+  if (data.yellow.length > 0) {
+    parts.push(
+      isHi
+        ? "डेटा संग्रह, ट्रैकिंग और अंतरराष्ट्रीय स्थानांतरण को लेकर सावधानी आवश्यक है।"
+        : "Caution is required regarding data collection, tracking, and international transfers."
+    );
+  }
+
+  if (data.green.length > 0) {
+    parts.push(
+      isHi
+        ? "कुछ प्रावधान उपयोगकर्ताओं को अपने डेटा पर अधिकार और नियंत्रण प्रदान करते हैं।"
+        : "Some provisions grant users rights and control over their personal data."
+    );
+  }
+
+  if (!parts.length) {
+    return isHi
+      ? "इस दस्तावेज़ में कोई प्रमुख कानूनी जोखिम नहीं पाया गया।"
+      : "No major legal risks were detected in this document.";
+  }
+
+  return parts.join(" ");
+}
+
+/* ======================= RENDER SECTIONS ======================= */
+
+function renderSection(title, list, color) {
+  if (!list.length) return "";
+
+  return `
+    <h4 class="section-title ${color}">
+      ${title} (${list.length})
+    </h4>
+    <ul class="clause-list">
+      ${list
+        .map(
+          c =>
+            `<li>${currentLang === "hi" ? c.explanation_hi : c.explanation_en}</li>`
+        )
+        .join("")}
+    </ul>
+  `;
+}
+
+/* ======================= COUNTS ======================= */
+
+function updateCounts(r, y, g) {
+  document.getElementById("red-count").innerText = `${r} Critical`;
+  document.getElementById("yellow-count").innerText = `${y} Concerns`;
+  document.getElementById("green-count").innerText = `${g} Safe`;
+}
+
+/* ======================= SCORE (FIXED) ======================= */
+
+function calcScore(red, yellow = 0) {
+  return Math.max(0, 100 - red * 20 - yellow * 8);
+}
+
+function updateScore(score) {
+  const scoreVal = document.getElementById("score-val");
+  const scoreCircle = document.getElementById("score-fill");
+  const scoreLabel = document.getElementById("score-rating");
+
+  scoreVal.innerText = score;
+
+  const radius = 45;
+  const circumference = 2 * Math.PI * radius;
+  const percent = Math.min(100, Math.max(0, score));
+  const offset = circumference - (percent / 100) * circumference;
+
+  scoreCircle.style.strokeDasharray = circumference;
+  scoreCircle.style.strokeDashoffset = offset;
+
+  if (score > 70) scoreLabel.innerText = "Safe";
+  else if (score > 40) scoreLabel.innerText = "Moderate";
+  else scoreLabel.innerText = "High Risk";
+}
+
+/* ======================= CHAT ======================= */
+
+function bindChatEvents() {
+  const input = document.getElementById("chat-input");
+  const send = document.getElementById("send-btn");
+
+  send.addEventListener("click", sendChat);
+  input.addEventListener("keypress", e => {
+    if (e.key === "Enter") sendChat();
+  });
+}
+
+function sendChat() {
+  const input = document.getElementById("chat-input");
+  const question = input.value.trim();
+  if (!question) return;
+
+  addChat(question, "user");
+  input.value = "";
+
+  respondRuleBased(question);
+}
+
+function respondRuleBased(question) {
+  if (!fallbackResult) {
+    addChat(
+      currentLang === "hi"
+        ? "कृपया पहले दस्तावेज़ का विश्लेषण करें।"
+        : "Please analyze the document first.",
+      "ai"
+    );
+    return;
+  }
+
+  const q = question.toLowerCase();
+  const allClauses = [
+    ...fallbackResult.red,
+    ...fallbackResult.yellow,
+    ...fallbackResult.green
   ];
 
-  document.getElementById("summary-text").innerText =
-    data.summary + "\n\nExtracted from this page:\n\n" + all.join("\n\n");
+  const hit = allClauses.find(c =>
+    q.split(" ").some(w => w.length > 3 && c.explanation_en.toLowerCase().includes(w))
+  );
 
-  document.getElementById("red-count").innerText = `${data.critical} Critical`;
-  document.getElementById("yellow-count").innerText = `${data.concerns} Concerns`;
-  document.getElementById("green-count").innerText = `${data.safe} Safe`;
-
-  updateScore(data.critical, data.concerns, data.safe);
+  if (hit) {
+    addChat(
+      currentLang === "hi" ? hit.explanation_hi : hit.explanation_en,
+      "ai"
+    );
+  } else {
+    addChat(
+      currentLang === "hi"
+        ? "इस प्रश्न के लिए नियम-आधारित विश्लेषण में कुछ नहीं मिला।"
+        : "No directly related clause was found. Deeper AI analysis would be required.",
+      "ai"
+    );
+  }
 }
 
-/* ================= SCORE ================= */
-function updateScore(c, y, g) {
-  const total = c + y + g;
-  if (!total) return;
+/* ======================= CHAT UI ======================= */
 
-  const score = Math.round(((g * 2 + y) / (total * 2)) * 100);
-
-  document.getElementById("score-val").innerText = score;
-  document.getElementById("score-fill").setAttribute("stroke-dasharray", `${score},100`);
-
-  let rating = "Poor";
-  if (score >= 80) rating = "Excellent";
-  else if (score >= 60) rating = "Good";
-  else if (score >= 40) rating = "Fair";
-
-  document.getElementById("score-rating").innerText = rating;
+function addChat(text, sender) {
+  const box = document.getElementById("chat-container");
+  const div = document.createElement("div");
+  div.className = sender === "user" ? "user-msg" : "ai-msg";
+  div.innerText = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
 }
 
-/* ================= CHAT (DEMO SAFE) ================= */
-const chatContainer = document.getElementById("chat-container");
-const chatInput = document.getElementById("chat-input");
-const sendBtn = document.getElementById("send-btn");
+/* ======================= LOADING ======================= */
 
-sendBtn.addEventListener("click", sendMessage);
-chatInput.addEventListener("keypress", e => {
-  if (e.key === "Enter") sendMessage();
+function showLoading() {
+  document.getElementById("summary-text").innerHTML =
+    "<p>Analyzing document…</p>";
+}
+
+/* ======================= LANGUAGE TOGGLE ======================= */
+
+document.querySelector(".cb-translate-btn")?.addEventListener("click", () => {
+  currentLang = currentLang === "en" ? "hi" : "en";
+  if (currentMode === "FALLBACK" && fallbackResult) renderFallback(fallbackResult);
+  if (currentMode === "AI" && aiResult) renderAI(aiResult);
 });
-
-function sendMessage() {
-  const q = chatInput.value.trim();
-  if (!q || isLoading) return;
-
-  appendMsg(q, "user");
-  chatInput.value = "";
-
-  appendMsg("Yes. Let me check this document…", "ai");
-  isLoading = true;
-
-  setTimeout(() => {
-    if (lastScan) {
-      const evidence = [
-        ...(lastScan.redHits || []),
-        ...(lastScan.yellowHits || []),
-        ...(lastScan.greenHits || [])
-      ];
-
-      const reply =
-        "Yes. Based on this page:\n\n" +
-        (evidence.length
-          ? "• " + evidence[0]
-          : "• This document contains user-impacting legal clauses.");
-
-      replaceLast(reply);
-    } else {
-      replaceLast("Yes. This page contains legal and privacy clauses.");
-    }
-
-    isLoading = false;
-  }, 600);
-}
-
-/* ================= CHAT UI ================= */
-function appendMsg(text, cls) {
-  const d = document.createElement("div");
-  d.className = cls + "-msg";
-  d.innerText = text;
-  chatContainer.appendChild(d);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-}
-
-function replaceLast(text) {
-  const msgs = chatContainer.querySelectorAll(".ai-msg");
-  msgs[msgs.length - 1].innerText = text;
-}

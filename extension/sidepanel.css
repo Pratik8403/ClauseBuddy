@@ -136,3 +136,31 @@ h1 span { font-weight: 200; color: var(--emerald); }
 
 input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 0.85rem; }
 button#send-btn { background: var(--emerald); border: none; border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+/* Wrapper to push button to the right */
+.translate-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin: 8px 0;
+}
+
+/* Language toggle button */
+#lang-toggle {
+  background-color: #10b981; /* emerald green */
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+#lang-toggle:hover {
+  background-color: #059669;
+  box-shadow: 0 3px 8px rgba(16, 185, 129, 0.35);
+}
+
+#lang-toggle:active {
+  transform: scale(0.96);
+}

@@ -1,45 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const analyzeBtn = document.getElementById('analyzeBtn');
+  const analyzeBtn = document.getElementById('analyzeBtn');
 
-    if (analyzeBtn) {
-        analyzeBtn.addEventListener('click', async () => {
-            try {
-                // 1. Get the currently active tab
-                const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!analyzeBtn) return;
 
-                if (!tab || !tab.id) {
-                    console.error("No active tab found.");
-                    alert("Error: Could not find active tab");
-                    return;
-                }
+  analyzeBtn.addEventListener('click', async () => {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-                // 2. Open the side panel for the window that owns this tab
-                await chrome.sidePanel.open({ windowId: tab.windowId });
-                
-                // 3. Extract text from the current page
-                chrome.tabs.sendMessage(tab.id, { action: "GET_PAGE_TEXT" }, (response) => {
-                    if (chrome.runtime.lastError) {
-                        console.error("Error sending message:", chrome.runtime.lastError);
-                        return;
-                    }
-                    
-                    if (response && response.success) {
-                        // Send the extracted text to the side panel
-                        chrome.runtime.sendMessage({
-                            action: "text_scraped",
-                            legal_text: response.text
-                        });
-                    } else {
-                        console.error("Failed to extract text:", response?.error);
-                    }
-                });
-                
-                // 4. Close the popup only after success
-                window.close();
-            } catch (error) {
-                console.error("Failed to open Side Panel:", error);
-                alert("Error: " + error.message);
-            }
-        });
+      if (!tab || !tab.id) {
+        alert("No active tab found");
+        return;
+      }
+
+      await chrome.sidePanel.open({ windowId: tab.windowId });
+
+      chrome.tabs.sendMessage(
+        tab.id,
+        { action: "GET_PAGE_TEXT" },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            console.error("Message error:", chrome.runtime.lastError.message);
+            alert("This page cannot be analyzed.");
+            return;
+          }
+
+          if (response?.success) {
+            chrome.runtime.sendMessage({
+              action: "text_scraped",
+              legal_text: response.text
+            });
+
+            // ✅ CLOSE ONLY AFTER SUCCESS
+            setTimeout(() => window.close(), 100);
+          } else {
+            alert("Failed to extract page text.");
+          }
+        }
+      );
+    } catch (err) {
+      console.error("Popup failure:", err);
+      alert("Failed to start analysis.");
     }
+  });
 });

@@ -1,124 +1,128 @@
 console.log("ClauseBuddy content script loaded");
 
-// Enhanced text extraction with Shadow DOM support
+// ---------- TEXT EXTRACTION ----------
 function extractVisibleText() {
   let text = "";
-  
-  // Helper function to extract text from a root element (including Shadow DOM)
+
   function extractFromRoot(root) {
     const walker = document.createTreeWalker(
       root,
       NodeFilter.SHOW_TEXT,
       {
-        acceptNode: function(node) {
-          // Skip script and style tags
+        acceptNode(node) {
           const parent = node.parentElement;
-          if (parent && (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE')) {
+          if (!parent) return NodeFilter.FILTER_REJECT;
+
+          // Skip script/style
+          if (parent.tagName === "SCRIPT" || parent.tagName === "STYLE") {
             return NodeFilter.FILTER_REJECT;
           }
-          
-          // Check if element is visible using computed styles
-          if (parent) {
-            const style = window.getComputedStyle(parent);
-            if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
-              return NodeFilter.FILTER_REJECT;
-            }
+
+          // Visibility check
+          const style = window.getComputedStyle(parent);
+          if (
+            style.display === "none" ||
+            style.visibility === "hidden" ||
+            style.opacity === "0"
+          ) {
+            return NodeFilter.FILTER_REJECT;
           }
-          
+
           return NodeFilter.FILTER_ACCEPT;
         }
-      },
-      false
+      }
     );
 
     let node;
     let localText = "";
-    
+
     while ((node = walker.nextNode())) {
       const value = node.nodeValue.replace(/\s+/g, " ").trim();
       if (value.length > 30) {
         localText += value + "\n";
       }
     }
-    
+
     return localText;
   }
-  
-  // Extract from main document
+
+  // Main document
   text += extractFromRoot(document.body);
-  
-  // Extract from Shadow DOM elements
-  const shadowHosts = document.querySelectorAll('*');
-  shadowHosts.forEach(host => {
-    if (host.shadowRoot) {
-      text += extractFromRoot(host.shadowRoot);
+
+  // Shadow DOMs
+  document.querySelectorAll("*").forEach(el => {
+    if (el.shadowRoot) {
+      text += extractFromRoot(el.shadowRoot);
     }
   });
-  
+
   return text.slice(0, 12000);
 }
 
-// Debounce function to avoid excessive processing
-function debounce(func, wait) {
+// ---------- DEBOUNCE ----------
+function debounce(fn, wait) {
   let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
+  return (...args) => {
     clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    timeout = setTimeout(() => fn(...args), wait);
   };
 }
 
-// Wait for dynamic content to load
+// ---------- WAIT FOR CONTENT ----------
 function waitForContent(callback, timeout = 3000) {
+  let responded = false;
   let observer;
-  let timeoutId;
-  
-  const checkContent = debounce(() => {
+
+  const finish = (text) => {
+    if (responded) return;
+    responded = true;
+    if (observer) observer.disconnect();
+    callback(text);
+  };
+
+  const check = debounce(() => {
     const text = extractVisibleText();
     if (text.length > 100) {
-      if (observer) observer.disconnect();
-      if (timeoutId) clearTimeout(timeoutId);
-      callback(text);
+      finish(text);
     }
-  }, 500);
-  
+  }, 400);
+
   // Initial check
-  checkContent();
-  
-  // Set up MutationObserver for dynamic content
-  observer = new MutationObserver(() => {
-    checkContent();
-  });
-  
+  check();
+
+  // Observe dynamic changes
+  observer = new MutationObserver(check);
   observer.observe(document.body, {
     childList: true,
     subtree: true,
     characterData: true
   });
-  
-  // Fallback timeout
-  timeoutId = setTimeout(() => {
-    if (observer) observer.disconnect();
-    const text = extractVisibleText();
-    callback(text);
+
+  // Hard timeout fallback
+  setTimeout(() => {
+    finish(extractVisibleText());
   }, timeout);
 }
 
+// ---------- MESSAGE HANDLER ----------
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "GET_PAGE_TEXT") {
-    // Wait for dynamic content before extracting
-    waitForContent((text) => {
-      console.log("Extracted length:", text.length);
-      sendResponse({
-        success: true,
-        text: text
+    try {
+      waitForContent((text) => {
+        console.log("ClauseBuddy extracted length:", text.length);
+        sendResponse({
+          success: true,
+          text
+        });
       });
-    });
-    
-    // Return true to indicate async response
+    } catch (e) {
+      sendResponse({
+        success: false,
+        error: e.message
+      });
+    }
+
+    // 🔴 REQUIRED: keep message channel alive
     return true;
   }
 });

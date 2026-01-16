@@ -1,0 +1,126 @@
+[
+  {
+    "id": "third_party_sharing",
+    "patterns": [
+      "share information with third parties",
+      "marketing partners",
+      "affiliates and subsidiaries",
+      "trusted partners",
+      "service providers",
+      "joint marketing",
+      "share your data",
+      "contractors and agents",
+      "third-party vendors"
+    ],
+    "explanation_en": "Your data may be shared with outside partners, affiliates, or vendors.",
+    "explanation_hi": "आपका डेटा बाहरी भागीदारों या विक्रेताओं के साथ साझा किया जा सकता है।"
+  },
+  {
+    "id": "modification_of_terms",
+    "patterns": [
+      "modify these terms at any time",
+      "changes to this policy",
+      "update from time to time",
+      "check this page periodically",
+      "continued use constitutes acceptance",
+      "reserve the right to change",
+      "effective immediately upon posting",
+      "without notice to you"
+    ],
+    "explanation_en": "They can change the rules at any time; your continued use means you agree.",
+    "explanation_hi": "वे कभी भी नियम बदल सकते हैं; आपके उपयोग जारी रखने का मतलब सहमति माना जाएगा।"
+  },
+  {
+    "id": "tracking_technologies",
+    "patterns": [
+      "cookies and similar technologies",
+      "web beacons",
+      "pixels",
+      "device identifiers",
+      "advertising id",
+      "browser fingerprinting",
+      "track your activity",
+      "collect usage data",
+      "local storage"
+    ],
+    "explanation_en": "They use cookies and beacons to track your behavior across the web.",
+    "explanation_hi": "वे इंटरनेट पर आपकी गतिविधियों को ट्रैक करने के लिए कुकीज़ और बीकन का उपयोग करते हैं।"
+  },
+  {
+    "id": "advertising_profiling",
+    "patterns": [
+      "targeted advertising",
+      "personalized content",
+      "tailored to your interests",
+      "build a profile",
+      "behavioral advertising",
+      "relevant ads",
+      "marketing communications",
+      "demographic information",
+      "measure ad performance"
+    ],
+    "explanation_en": "Your data is used to build a profile for serving targeted advertisements.",
+    "explanation_hi": "आपके डेटा का उपयोग विज्ञापन दिखाने के लिए आपकी प्रोफ़ाइल बनाने में किया जाता है।"
+  },
+  {
+    "id": "data_retention_indefinite",
+    "patterns": [
+      "retain your information",
+      "store your data",
+      "period of time necessary",
+      "archived copies",
+      "legal obligations",
+      "indefinitely",
+      "as long as necessary",
+      "backup systems",
+      "business purposes"
+    ],
+    "explanation_en": "They may keep your data indefinitely, even after you stop using the service.",
+    "explanation_hi": "वे सेवा बंद करने के बाद भी अनिश्चित काल तक आपका डेटा अपने पास रख सकते हैं।"
+  },
+  {
+    "id": "cross_border_transfer",
+    "patterns": [
+      "transfer to other countries",
+      "processed in the united states",
+      "stored on servers outside",
+      "international data transfer",
+      "cross-border transfer",
+      "laws may differ",
+      "transfer your information",
+      "jurisdiction other than your own"
+    ],
+    "explanation_en": "Your data is transferred to countries with different privacy laws (e.g., USA).",
+    "explanation_hi": "आपका डेटा अन्य देशों में भेजा जा सकता है जहाँ गोपनीयता कानून अलग हो सकते हैं।"
+  },
+  {
+    "id": "merger_acquisition_transfer",
+    "patterns": [
+      "merger or acquisition",
+      "sale of assets",
+      "bankruptcy or insolvency",
+      "transfer of business",
+      "successor entity",
+      "sold to a third party",
+      "corporate restructuring",
+      "assign our rights"
+    ],
+    "explanation_en": "If the company is sold, your personal data is sold as an asset.",
+    "explanation_hi": "यदि कंपनी बिकती है, तो आपकी निजी जानकारी भी एक संपत्ति के रूप में बेच दी जाएगी।"
+  },
+  {
+    "id": "broad_permissions",
+    "patterns": [
+      "access your camera",
+      "access your microphone",
+      "read your contacts",
+      "location data",
+      "precise geolocation",
+      "background usage",
+      "bluetooth permission",
+      "record audio"
+    ],
+    "explanation_en": "The app requests sensitive permissions like location, contacts, or microphone.",
+    "explanation_hi": "यह ऐप स्थान, संपर्क या माइक्रोफ़ोन जैसी संवेदनशील अनुमतियाँ मांगता है।"
+  }
+]
