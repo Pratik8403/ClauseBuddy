@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ClauseBuddy Dashboard</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+
+<body class="dashboard-body">
+  <div class="dashboard-container">
+
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div>
+        <h2>ClauseBuddy Dashboard</h2>
+        <p class="subtext">Your legal risk overview</p>
+      </div>
+
+      <div class="header-actions">
+        <button id="lang-toggle" class="cb-translate-btn">हिंदी</button>
+        <button id="clear-history" class="danger-btn">Clear History</button>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <section class="dashboard-stats">
+      <div class="stat-card">
+        <span id="stat-sites">0</span>
+        <label>Sites Analyzed</label>
+      </div>
+      <div class="stat-card">
+        <span id="stat-score">–</span>
+        <label>Avg. Score</label>
+      </div>
+      <div class="stat-card">
+        <span id="stat-updated">0</span>
+        <label>Updated Policies</label>
+      </div>
+    </section>
+
+    <!-- History -->
+    <ul id="history-list" class="history-list"></ul>
+
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

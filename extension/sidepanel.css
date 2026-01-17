@@ -156,6 +156,20 @@ button#send-btn { background: var(--emerald); border: none; border-radius: 8px; 
   transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
 }
 
+#open-dashboard {
+  background-color: #10b981; /* emerald green */
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  margin-left: auto;
+  display: block;
+}
+
 #lang-toggle:hover {
   background-color: #059669;
   box-shadow: 0 3px 8px rgba(16, 185, 129, 0.35);
@@ -164,3 +178,109 @@ button#send-btn { background: var(--emerald); border: none; border-radius: 8px; 
 #lang-toggle:active {
   transform: scale(0.96);
 }
+
+.dashboard-body {
+  background: #0b0f14;
+  color: #e5e7eb;
+  font-family: system-ui, sans-serif;
+}
+
+.dashboard-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.subtext {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #111827;
+  border: 1px solid #1f2933;
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+
+.stat-card span {
+  font-size: 20px;
+  font-weight: 600;
+  display: block;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-item {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.score-badge {
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.score-green { background: #064e3b; color: #34d399; }
+.score-yellow { background: #78350f; color: #facc15; }
+.score-red { background: #7f1d1d; color: #f87171; }
+
+.history-meta {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.updated-badge {
+  background: #7c2d12;
+  color: #fdba74;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 6px;
+}
+
+.history-counts {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.history-counts .red { color: #f87171; }
+.history-counts .yellow { color: #facc15; }
+.history-counts .green { color: #34d399; }

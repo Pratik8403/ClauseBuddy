@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
           if (response?.success) {
             chrome.runtime.sendMessage({
               action: "text_scraped",
-              legal_text: response.text
+              legal_text: response.text,
+              page_url: tab.url
             });
 
             // ✅ CLOSE ONLY AFTER SUCCESS

@@ -7,12 +7,116 @@
 const BACKEND_URL = "https://clausebuddy.onrender.com/analyze";
 const CLAUSE_PATH = "clauses/";
 
+/* =========================================================
+   STORAGE UTILITIES (chrome.storage.local)
+   ========================================================= */
+
+const STORAGE_KEY = "clausebuddy_history";
+
+// Get full history array
+function getClauseHistory() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get([STORAGE_KEY], (result) => {
+      resolve(result[STORAGE_KEY] || []);
+    });
+  });
+}
+
+// Save full history array
+function saveClauseHistory(history) {
+  return new Promise((resolve) => {
+    chrome.storage.local.set({ [STORAGE_KEY]: history }, resolve);
+  });
+}
+
+// Clear all stored history
+function clearClauseHistory() {
+  return new Promise((resolve) => {
+    chrome.storage.local.remove(STORAGE_KEY, resolve);
+  });
+}
+
 let rules = { red: [], yellow: [], green: [] };
 let currentLang = "en";
 let currentMode = "AI"; // AI | FALLBACK
 let extractedText = "";
 let fallbackResult = null;
 let aiResult = null;
+
+/* =========================================================
+   POLICY HASHING (SHA-256)
+   ========================================================= */
+
+async function generatePolicyHash(text) {
+  if (!text) return null;
+
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+  return hashArray
+    .map(byte => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function hasPolicyChanged(oldHash, newHash) {
+  if (!oldHash || !newHash) return false;
+  return oldHash !== newHash;
+}
+
+/* =========================================================
+   ANALYSIS PERSISTENCE
+   ========================================================= */
+
+async function persistAnalysisResult({
+  url,
+  site,
+  score,
+  critical,
+  concerns,
+  safe,
+  policyText
+}) {
+  try {
+    const history = await getClauseHistory();
+
+    console.log("Existing history Before save:", history);
+
+    const newHash = await generatePolicyHash(policyText);
+
+    const existingIndex = history.findIndex(item => item.url === url);
+
+    const entry = {
+      url,
+      site,
+      score,
+      critical,
+      concerns,
+      safe,
+      timestamp: new Date().toISOString(),
+      hash: newHash,
+      updated: false
+    };
+
+    if (existingIndex !== -1) {
+      const oldEntry = history[existingIndex];
+      entry.updated = hasPolicyChanged(oldEntry.hash, newHash);
+      history[existingIndex] = entry;
+    } else {
+      history.unshift(entry);
+    }
+
+    // Keep history small and fast
+    await saveClauseHistory(history.slice(0, 25));
+
+    console.log("STEP 5 Verified: Analysis persisted", entry);
+
+  } catch (err) {
+    console.error("Failed to persist analysis:", err);
+  }
+}
 
 /* ======================= INIT ======================= */
 
@@ -46,6 +150,7 @@ async function loadClauseLibraries() {
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.action === "text_scraped") {
     extractedText = msg.legal_text || "";
+    analyzedPageURL = msg.page_url || "";
     analyzeDocument(extractedText);
   }
 });
@@ -132,7 +237,18 @@ function renderAI(data) {
 
   updateCounts(data.critical, data.concerns, data.safe);
   updateScore(calcScore(data.critical, data.concerns));
+
+  persistAnalysisResult({
+  url: analyzedPageURL,
+  site: new URL(analyzedPageURL).hostname.replace("www.", ""),
+  score: scoreValue,                 // use your computed score
+  critical: redCount,
+  concerns: yellowCount,
+  safe: greenCount,
+  policyText: extractedText          // IMPORTANT
+});
 }
+
 
 /* ======================= RENDER FALLBACK ======================= */
 
@@ -141,7 +257,7 @@ function renderFallback(data) {
 
   let html = `
     <div class="mode-badge fallback">
-      Rule-based scan (AI temporarily unavailable)
+      Summary Generated
     </div>
     <p>${summary}</p>
   `;
@@ -152,8 +268,28 @@ function renderFallback(data) {
 
   document.getElementById("summary-text").innerHTML = html;
 
-  updateCounts(data.red.length, data.yellow.length, data.green.length);
-  updateScore(calcScore(data.red.length, data.yellow.length));
+  // ✅ DEFINE COUNTS FIRST
+  const redCount = data.red.length;
+  const yellowCount = data.yellow.length;
+  const greenCount = data.green.length;
+
+  // ✅ DEFINE SCORE VALUE (THIS WAS MISSING)
+  const scoreValue = calcScore(redCount, yellowCount);
+
+  // ✅ NOW USE THEM
+  updateCounts(redCount, yellowCount, greenCount);
+  updateScore(scoreValue);
+
+  // ✅ NOW PERSIST (FINAL STEP)
+  persistAnalysisResult({
+    url: analyzedPageURL,
+    site: new URL(analyzedPageURL).hostname.replace("www.", ""),
+    score: scoreValue,
+    critical: redCount,
+    concerns: yellowCount,
+    safe: greenCount,
+    policyText: extractedText
+  });
 }
 
 /* ======================= CLAUSE-AWARE SUMMARY ======================= */
@@ -343,4 +479,10 @@ document.querySelector(".cb-translate-btn")?.addEventListener("click", () => {
   currentLang = currentLang === "en" ? "hi" : "en";
   if (currentMode === "FALLBACK" && fallbackResult) renderFallback(fallbackResult);
   if (currentMode === "AI" && aiResult) renderAI(aiResult);
+});
+
+document.getElementById("open-dashboard")?.addEventListener("click", () => {
+  chrome.tabs.create({
+    url: chrome.runtime.getURL("dashboard.html")
+  });
 });

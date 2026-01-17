@@ -8,7 +8,8 @@
         "clauses/red_clauses.json",
         "clauses/yellow_clauses.json",
         "clauses/green_clauses.json",
-        "clauses/hi_translations.json"
+        "clauses/hi_translations.json",
+        "dashboard.html"
       ],
       "matches": ["<all_urls>"]
     }
